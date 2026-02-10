@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>body{background:#1c1c1c;color:#ededed;font-size:16px;font-family:system-ui,-apple-system,sans-serif;margin:0}</style>
+  <title>404 - Страница не найдена | Coreness</title>
+  <meta name="description" content="Страница не найдена. Вернитесь на главную страницу Coreness.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" type="image/png" href="/images/logo-dark.png">
+  <link rel="canonical" href="https://coreness.tech/404.html">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=optional" rel="stylesheet">
+  
+  <style>
+    * {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #1c1c1c;
+      color: #ededed;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(to right, #3ecf8e, #2fb574);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .brand-name {
+      color: #3ecf8e;
+      font-weight: 500;
+    }
+    
+    .btn-primary {
+      background: #3ecf8e;
+      color: #000;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.875rem;
+      border-radius: 0.375rem;
+      text-decoration: none;
+    }
+    
+    .btn-primary:hover {
+      background: #2fb574;
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ededed;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.875rem;
+      border-radius: 0.375rem;
+      text-decoration: none;
+      background: transparent;
+    }
+    
+    .btn-secondary:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .nav-link {
+      transition: color 0.2s ease;
+    }
+    
+    .nav-link:hover {
+      color: #3ecf8e;
+    }
+    
+    .error-container {
+      min-height: calc(100vh - 4rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    
+    .error-code {
+      font-size: 8rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 1rem;
+      opacity: 0.1;
+      user-select: none;
+    }
+    
+    .error-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .error-message {
+      font-size: 1.125rem;
+      color: #9ca3af;
+      max-width: 32rem;
+      margin: 0 auto 2rem;
+      line-height: 1.75;
+    }
+    
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+    
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      font-size: 0.875rem;
+    }
+    
+    .links a {
+      color: #9ca3af;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    
+    .links a:hover {
+      color: #3ecf8e;
+    }
+    
+    @media (max-width: 640px) {
+      .error-code {
+        font-size: 5rem;
+      }
+      
+      .error-title {
+        font-size: 1.5rem;
+      }
+      
+      .error-message {
+        font-size: 1rem;
+      }
+      
+      .actions {
+        flex-direction: column;
+      }
+      
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        max-width: 16rem;
+      }
+    }
+  </style>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#3ecf8e',
+              dark: '#2fb574',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+</head>
+<body class="antialiased">
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50" style="backdrop-filter: blur(12px); background-color: rgba(28, 28, 28, 0.8); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center space-x-8">
+          <a href="/" class="text-xl font-semibold gradient-text">Coreness</a>
+          <div class="hidden md:flex space-x-6 text-sm">
+            <a href="/#features" class="nav-link text-gray-400">Возможности</a>
+            <a href="/#demo" class="nav-link text-gray-400">Демо</a>
+            <a href="/#quickstart" class="nav-link text-gray-400">Быстрый старт</a>
+            <a href="/#contact" class="nav-link text-gray-400">Контакты</a>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button onclick="switchLanguage()" class="text-sm text-gray-400 hover:text-white transition language-btn">RU</button>
+          <a href="https://github.com/Vensus137/Coreness" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition" aria-label="GitHub">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="pt-16">
+    <div class="error-container">
+    <div class="error-code">404</div>
+    
+    <h1 class="error-title">
+      Страница не найдена
+    </h1>
+    
+    <p class="error-message">
+      К сожалению, запрашиваемая страница не существует или была перемещена. 
+      Проверьте правильность адреса или вернитесь на главную страницу.
+    </p>
+    
+    <div class="actions">
+      <a href="/" class="btn-primary home-link">
+        На главную
+      </a>
+      <a href="https://docs.coreness.tech" target="_blank" rel="noopener" class="btn-secondary docs-link">
+        Документация
+      </a>
+    </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-8" style="border-top: 1px solid rgba(255, 255, 255, 0.05);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div class="flex space-x-6 text-sm footer-links">
+          <a href="https://github.com/Vensus137/Coreness" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">GitHub</a>
+          <a href="https://docs.coreness.tech" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition docs-footer">Документация</a>
+          <a href="https://t.me/vensus137" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">Telegram</a>
+        </div>
+        <div class="text-gray-400 text-sm">
+          © <span class="brand-name">Coreness</span> 2026
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Language detection and UI update
+    function getCookie(name) {
+      return document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+      }, '');
+    }
+    
+    function setCookie(name, value, days) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+    }
+    
+    function switchLanguage() {
+      const currentLang = getCookie('lang') || 'ru';
+      const newLang = currentLang === 'ru' ? 'en' : 'ru';
+      setCookie('lang', newLang, 365);
+      updateLanguage(newLang);
+    }
+    
+    function updateLanguage(lang) {
+      const isEnglish = lang === 'en';
+      
+      // Update HTML lang attribute
+      document.documentElement.lang = isEnglish ? 'en' : 'ru';
+      
+      // Update meta tags
+      document.title = isEnglish ? '404 - Page Not Found | Coreness' : '404 - Страница не найдена | Coreness';
+      document.querySelector('meta[name="description"]').content = isEnglish 
+        ? 'Page not found. Return to the Coreness homepage.'
+        : 'Страница не найдена. Вернитесь на главную страницу Coreness.';
+      
+      // Update nav links
+      const navLinks = document.querySelectorAll('.nav-link');
+      if (isEnglish) {
+        navLinks[0].textContent = 'Features';
+        navLinks[1].textContent = 'Demo';
+        navLinks[2].textContent = 'Quick Start';
+        navLinks[3].textContent = 'Contact';
+      } else {
+        navLinks[0].textContent = 'Возможности';
+        navLinks[1].textContent = 'Демо';
+        navLinks[2].textContent = 'Быстрый старт';
+        navLinks[3].textContent = 'Контакты';
+      }
+      
+      // Update language button
+      document.querySelector('.language-btn').textContent = isEnglish ? 'EN' : 'RU';
+      
+      // Update error content
+      document.querySelector('.error-title').textContent = isEnglish 
+        ? 'Page Not Found' 
+        : 'Страница не найдена';
+      
+      document.querySelector('.error-message').textContent = isEnglish
+        ? 'Unfortunately, the requested page does not exist or has been moved. Please check the URL or return to the homepage.'
+        : 'К сожалению, запрашиваемая страница не существует или была перемещена. Проверьте правильность адреса или вернитесь на главную страницу.';
+      
+      // Update buttons
+      document.querySelector('.home-link').textContent = isEnglish ? 'Go Home' : 'На главную';
+      document.querySelector('.docs-link').textContent = isEnglish ? 'Documentation' : 'Документация';
+      
+      // Update footer
+      document.querySelector('.docs-footer').textContent = isEnglish ? 'Documentation' : 'Документация';
+      
+      // Update home link to point to correct language version
+      const homeLinks = document.querySelectorAll('a[href="/"], a[href="/en"]');
+      homeLinks.forEach(link => {
+        link.href = isEnglish ? '/en' : '/';
+      });
+    }
+    
+    // Initialize language on page load
+    const savedLang = getCookie('lang');
+    if (savedLang) {
+      updateLanguage(savedLang);
+    } else {
+      // Auto-detect on first visit
+      const browserLang = navigator.language || navigator.userLanguage;
+      const detectedLang = browserLang.startsWith('ru') ? 'ru' : 'en';
+      setCookie('lang', detectedLang, 365);
+      updateLanguage(detectedLang);
+    }
+    
+    // Track 404 errors (optional, for analytics)
+    if (window.gtag) {
+      gtag('event', 'page_view', {
+        page_title: '404 Error',
+        page_location: window.location.href,
+        page_path: window.location.pathname
+      });
+    }
+  </script>
+</body>
+</html>

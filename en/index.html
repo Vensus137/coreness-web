@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>body{background:#1c1c1c;color:#ededed;font-size:16px;font-family:system-ui,-apple-system,sans-serif;margin:0}</style>
+  <title>Coreness - Platform for AI Agents and Chat Bots</title>
+  <meta name="description" content="Multi-tenant platform for AI agents and chatbots with LLM integration. Open-source, self-hosted, extensible.">
+  <meta name="keywords" content="AI agents, chatbots, LLM, open-source, self-hosted, YAML, multi-tenant, Coreness">
+  <link rel="icon" type="image/png" href="/images/logo-dark.png">
+  <link rel="canonical" href="https://coreness.tech/en">
+  <link rel="sitemap" type="application/xml" href="https://coreness.tech/sitemap.xml">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://coreness.tech/en">
+  <meta property="og:title" content="Coreness - Platform for AI Agents and Chat Bots">
+  <meta property="og:description" content="Multi-tenant platform for AI agents and chatbots with LLM integration. Open-source, self-hosted, extensible.">
+  <meta property="og:image" content="https://coreness.tech/images/logo-dark.png">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=optional" rel="stylesheet">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "Coreness",
+        "url": "https://coreness.tech",
+        "description": "Multi-tenant platform for AI agents and chatbots with LLM integration. Open-source, self-hosted, extensible.",
+        "inLanguage": "en"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Coreness",
+        "description": "Multi-tenant platform for building AI agents and chat bots. Logic is described in YAML. Open-source, self-hosted.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Docker",
+        "url": "https://coreness.tech",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    ]
+  }
+  </script>
+  
+  <style>
+    * {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #1c1c1c;
+      color: #ededed;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(to right, #3ecf8e, #2fb574);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .brand-name {
+      color: #3ecf8e;
+      font-weight: 500;
+    }
+    
+    .feature-card {
+      background: linear-gradient(to bottom, rgba(62, 207, 142, 0.05), rgba(62, 207, 142, 0.02));
+      border: 1px solid rgba(62, 207, 142, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      border-color: rgba(62, 207, 142, 0.3);
+      background: linear-gradient(to bottom, rgba(62, 207, 142, 0.08), rgba(62, 207, 142, 0.03));
+      transform: translateY(-2px);
+    }
+    
+    .nav-link {
+      transition: color 0.2s ease;
+    }
+    
+    .nav-link:hover {
+      color: #3ecf8e;
+    }
+    
+    .btn-primary {
+      background: #3ecf8e;
+      color: #000;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+      background: #2fb574;
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ededed;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-secondary:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .code-spotlight {
+      position: relative;
+      background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(15, 15, 15, 0.95) 100%);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(62, 207, 142, 0.1);
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 60px rgba(62, 207, 142, 0.03);
+      backdrop-filter: blur(10px);
+    }
+    
+    .code-spotlight::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(62, 207, 142, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    
+    .code-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .code-content {
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .yaml-key {
+      color: #3ecf8e;
+    }
+    
+    .yaml-string {
+      color: #a8dadc;
+    }
+    
+    .yaml-comment {
+      color: #6c757d;
+      font-style: italic;
+    }
+    
+    .yaml-value {
+      color: #f1fa8c;
+    }
+    
+    .yaml-list {
+      color: #ff79c6;
+    }
+    
+    .demo-container {
+      position: relative;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    
+    .demo-gif {
+      border-radius: 12px;
+      box-shadow: 
+        0 0 0 1px rgba(62, 207, 142, 0.1),
+        0 20px 40px -10px rgba(0, 0, 0, 0.4),
+        0 40px 80px -20px rgba(0, 0, 0, 0.3),
+        0 0 100px rgba(62, 207, 142, 0.05);
+    }
+  </style>
+
+  <!-- Tailwind CSS (must be in head to prevent FOUC) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#3ecf8e',
+              dark: '#2fb574',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+</head>
+<body class="antialiased">
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50" style="backdrop-filter: blur(12px); background-color: rgba(28, 28, 28, 0.8); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center space-x-8">
+          <a href="#hero" class="text-xl font-semibold gradient-text">Coreness</a>
+          <div class="hidden md:flex space-x-6 text-sm">
+            <a href="#features" class="nav-link text-gray-400">Features</a>
+            <a href="#examples" class="nav-link text-gray-400">Examples</a>
+            <a href="#quickstart" class="nav-link text-gray-400">Quick Start</a>
+            <a href="#contact" class="nav-link text-gray-400">Contact</a>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button onclick="switchLanguage()" class="text-sm text-gray-400 hover:text-white transition">EN</button>
+          <a href="https://github.com/Vensus137/Coreness" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition" aria-label="GitHub">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="pt-16">
+    <!-- Hero Section -->
+    <section id="hero" class="relative py-20 sm:py-32 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-4xl mx-auto">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            Platform for building<br>
+            <span class="gradient-text">AI agents and chatbots</span>
+          </h1>
+          <p class="text-lg sm:text-xl text-gray-400 mb-10 leading-relaxed max-w-3xl mx-auto">
+            Multi-tenant platform for building intelligent bots with LLM integration. <span class="text-white">Logic is described in YAML configurations</span> — declarative approach to development.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <a href="https://docs.coreness.tech" target="_blank" rel="noopener" class="btn-primary inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium rounded-md">
+              Documentation
+            </a>
+            <a href="https://github.com/Vensus137/Coreness" target="_blank" rel="noopener" class="btn-secondary inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium rounded-md">
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold mb-4">What is <span class="brand-name">Coreness</span> for</h2>
+          <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+            <span class="text-white font-medium">Open-source</span> and <span class="text-white font-medium">self-hosted</span> solution with full control over your data and infrastructure. Tools for building <span class="text-white">production-ready</span> AI agents and chatbots.
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Feature 1 -->
+          <div class="feature-card rounded-xl p-6">
+            <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-semibold mb-2 text-white">Declarative Configuration</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">All bot logic is described in YAML files. Create complex scenarios without code.</p>
+          </div>
+          
+          <!-- Feature 2 -->
+          <div class="feature-card rounded-xl p-6">
+            <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <h3 class="text-base font-semibold mb-2 text-white">Multi-tenancy</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">One instance — multiple independent bots with complete data isolation via RLS.</p>
+          </div>
+          
+          <!-- Feature 3 -->
+          <div class="feature-card rounded-xl p-6">
+            <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-semibold mb-2 text-white">AI and RAG</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">Integration with OpenAI, Anthropic, Google, DeepSeek. Vector search via pgvector.</p>
+          </div>
+          
+          <!-- Feature 4 -->
+          <div class="feature-card rounded-xl p-6">
+            <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-semibold mb-2 text-white">Scheduled Scenarios</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">Automation on schedule via cron expressions. Broadcasts, reports, notifications.</p>
+          </div>
+          
+          <!-- Feature 5 -->
+          <div class="feature-card rounded-xl p-6">
+            <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-semibold mb-2 text-white">Plugin Architecture</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">Easily extend functionality. Storage, transitions, placeholders out of the box.</p>
+          </div>
+          
+          <!-- Feature 6 -->
+          <div class="feature-card rounded-xl p-6">
+            <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-semibold mb-2 text-white">Production Ready</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">Reliable database, background tasks, error handling. Built for real-world workloads.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Examples Section -->
+    <section id="examples" class="py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold mb-4">Configuration Examples</h2>
+          <p class="text-gray-400 text-lg max-w-3xl mx-auto">
+            The platform comes with <span class="text-white">Master Bot</span> — a ready-to-use bot for platform management via Telegram.
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto mb-12">
+          <div class="code-spotlight">
+            <div class="code-header">
+              <div class="text-xs text-gray-400 font-mono">commands.yaml</div>
+            </div>
+            <div class="code-content">
+              <pre class="text-xs leading-relaxed overflow-x-auto"><code><span class="yaml-key">start</span>:
+  <span class="yaml-key">description</span>: <span class="yaml-string">"Start Master Bot"</span>
+  
+  <span class="yaml-key">trigger</span>:
+    <span class="yaml-list">-</span> <span class="yaml-key">event_type</span>: <span class="yaml-string">"message"</span>
+      <span class="yaml-key">event_text</span>: <span class="yaml-string">"/start"</span>
+    <span class="yaml-list">-</span> <span class="yaml-key">event_type</span>: <span class="yaml-string">"callback"</span>
+      <span class="yaml-key">callback_data</span>: <span class="yaml-string">"start"</span>
+
+  <span class="yaml-key">step</span>:
+    <span class="yaml-list">-</span> <span class="yaml-key">action</span>: <span class="yaml-string">"execute_scenario"</span>
+      <span class="yaml-key">params</span>:
+        <span class="yaml-key">scenario</span>: <span class="yaml-string">"default_check"</span>
+    
+    <span class="yaml-list">-</span> <span class="yaml-key">action</span>: <span class="yaml-string">"send_message"</span>
+      <span class="yaml-key">params</span>:
+        <span class="yaml-key">text</span>: <span class="yaml-value">|
+          {_cache.translation.start}</span>
+        <span class="yaml-key">inline</span>: <span class="yaml-string">"{_cache.translation.start_inline}"</span></code></pre>
+            </div>
+          </div>
+          
+          <div class="code-spotlight">
+            <div class="code-header">
+              <div class="text-xs text-gray-400 font-mono">config.yaml</div>
+            </div>
+            <div class="code-content">
+              <pre class="text-xs leading-relaxed overflow-x-auto"><code><span class="yaml-key">i18n</span>:
+  <span class="yaml-key">available_languages</span>:
+    <span class="yaml-list">-</span> <span class="yaml-value">en</span>
+    <span class="yaml-list">-</span> <span class="yaml-value">ru</span>
+  <span class="yaml-key">default_language</span>: <span class="yaml-value">en</span>
+
+<span class="yaml-key">environments</span>:
+  <span class="yaml-key">available</span>:
+    <span class="yaml-list">-</span> <span class="yaml-value">test</span>
+    <span class="yaml-list">-</span> <span class="yaml-value">prod</span>
+  <span class="yaml-key">default</span>: <span class="yaml-value">prod</span>
+
+<span class="yaml-key">deployment</span>:
+  <span class="yaml-key">available_modes</span>:
+    <span class="yaml-list">-</span> <span class="yaml-value">docker</span>
+    <span class="yaml-list">-</span> <span class="yaml-value">native</span>
+  <span class="yaml-key">default</span>: <span class="yaml-value">docker</span></code></pre>
+            </div>
+          </div>
+        </div>
+        
+        <div class="demo-container">
+          <div class="text-center mb-6">
+            <p class="text-sm text-gray-400">Master Bot in action</p>
+          </div>
+          <img src="/images/master-bot-en.gif" alt="Master Bot Example" class="demo-gif w-full" width="720" height="720">
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section id="quickstart" class="py-20">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold mb-4">Quick Start</h2>
+          <p class="text-gray-400 text-lg">Deploy the platform in <span class="text-white">minutes</span></p>
+        </div>
+        
+        <div class="code-spotlight">
+          <div class="code-header">
+            <div class="text-xs text-gray-400 font-mono">Installation</div>
+          </div>
+          <div class="code-content">
+            <pre class="text-sm leading-relaxed overflow-x-auto"><code><span class="yaml-comment"># Clone the repository</span>
+<span class="yaml-key">git clone</span> https://github.com/Vensus137/Coreness.git
+<span class="yaml-key">cd</span> Coreness
+
+<span class="yaml-comment"># Run Core Manager</span>
+<span class="yaml-key">python</span> tools/core_manager/core_manager.py
+
+<span class="yaml-comment"># Choose environment (test/prod) and mode (docker/native)</span>
+<span class="yaml-comment"># The utility will set everything up automatically</span></code></pre>
+          </div>
+        </div>
+        
+        <div class="mb-8"></div>
+        
+        <div class="text-center">
+          <a href="https://docs.coreness.tech" target="_blank" rel="noopener" class="inline-flex items-center text-brand hover:text-brand-dark font-medium transition text-sm">
+            Full deployment documentation →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-6">Contact the Developer</h2>
+        <div class="text-base text-gray-400 space-y-4 mb-10 max-w-2xl mx-auto">
+          <p><span class="brand-name">Coreness</span> is a fully <span class="text-white">open-source</span> project under MIT license.</p>
+          <p>Feel free to reach out regarding:</p>
+          <ul class="space-y-2.5 text-left max-w-xl mx-auto mt-6 text-sm">
+            <li class="flex items-start">
+              <span class="text-brand mr-3 mt-0.5">•</span>
+              <span>Support with using the platform</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-brand mr-3 mt-0.5">•</span>
+              <span>Help with deployment and configuration</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-brand mr-3 mt-0.5">•</span>
+              <span>Development based on the platform</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-brand mr-3 mt-0.5">•</span>
+              <span>Collaboration and project contributions</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-brand mr-3 mt-0.5">•</span>
+              <span>Consulting and technical questions</span>
+            </li>
+          </ul>
+        </div>
+        <a href="https://t.me/vensus137" target="_blank" rel="noopener" class="btn-primary inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium rounded-md">
+          Contact on Telegram
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-8 mt-20" style="border-top: 1px solid rgba(255, 255, 255, 0.05);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div class="flex space-x-6 text-sm">
+          <a href="https://github.com/Vensus137/Coreness" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">GitHub</a>
+          <a href="https://docs.coreness.tech" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">Documentation</a>
+          <a href="https://t.me/vensus137" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">Telegram</a>
+        </div>
+        <div class="text-gray-400 text-sm">
+          © <span class="brand-name">Coreness</span> 2026
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Language switcher
+    function switchLanguage() {
+      const currentLang = getCookie('lang') || 'en';
+      const newLang = currentLang === 'en' ? 'ru' : 'en';
+      setCookie('lang', newLang, 365);
+      // Save scroll position
+      sessionStorage.setItem('scrollPos', window.scrollY);
+      window.location.href = newLang === 'ru' ? '/' : '/en';
+    }
+    
+    // Cookie helpers
+    function setCookie(name, value, days) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+    }
+    
+    function getCookie(name) {
+      return document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+      }, '');
+    }
+    
+    // Auto-detect language on first visit
+    if (!getCookie('lang')) {
+      const browserLang = navigator.language || navigator.userLanguage;
+      const lang = browserLang.startsWith('ru') ? 'ru' : 'en';
+      setCookie('lang', lang, 365);
+      if (lang === 'ru') {
+        window.location.href = '/';
+      }
+    }
+    
+    // Restore scroll position after language switch
+    const savedScrollPos = sessionStorage.getItem('scrollPos');
+    if (savedScrollPos) {
+      window.scrollTo(0, parseInt(savedScrollPos));
+      sessionStorage.removeItem('scrollPos');
+    }
+    
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
