@@ -1,0 +1,1429 @@
+/* Coreness landing page. Static: what stands here is what is served.
+   No framework, no build step, no external font, no third-party request. */
+
+:root {
+  /* The page's colours. Depth comes from their arrangement, not from more of them. */
+  --bg: #0f1115;
+  --surface: #1b1b1c;
+  --surface-2: #232324;
+  --hairline: rgba(255, 255, 255, .14);
+  --hairline-strong: rgba(255, 255, 255, .30);
+  --text: #ffffff;
+  --muted: #979da6;
+  --accent: #5686fe;
+  /* The filled button needs one value the palette does not name: white on
+     #5686fe measures 3.37:1, below AA, and the given hover value carries white
+     at 4.74:1. So the fill starts a step deeper and lightens to the given one. */
+  --accent-fill: #2b4fd6;
+  --accent-fill-hover: #3964fe;
+  --link-hover: #8fb0ff;
+  /* Three greys the drawing needs and the palette does not name: the step above
+     muted that the mock's own prose is written in, the step below white that a
+     bold token takes inside a dim line, and the terminal's ink. */
+  --muted-2: #a8afb9;
+  --strong: #c3c9d2;
+  --code: #e6e9ee;
+  /* The dimmest word the page is allowed: 5.1:1 on the bento plate and 5.6:1 on
+     the window's rail, so a 9.5px label still clears AA there. */
+  --dim: #8b929c;
+  /* The window's own grounds. A panel is lighter than the page it floats over,
+     and its rails are a step darker again — that stepping is what makes the
+     window read as an object rather than as a region. */
+  --win: #1a1d24;
+  --win-bar: #14161c;
+  --win-rail: #16181f;
+  --win-soft: rgba(255, 255, 255, .08);
+  --win-line: rgba(255, 255, 255, .10);
+
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --radius-card: 16px;
+  --radius-code: 10px;
+  --wrap: 1180px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, figure { margin: 0; }
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--link-hover);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* The strip the pill floats in: full width, fixed, and never painted itself.
+   The surface is the pill's own ::before, which is what fades in on scroll. */
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 50px;
+  padding: 8px 0 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background-color .3s, border-color .3s, backdrop-filter .3s;
+}
+
+.bar__strip { height: 42px; }
+
+/* The pill carries no surface of its own: its `::before` is the surface, and how
+   much of it stands is written from the scroll offset into `--surface`. */
+.bar__pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 42px;
+  padding: 0 6px 0 18px;
+  border-radius: 100px;
+}
+
+/* The fill is 82% rather than the 72% the reference's own translucency suggests:
+   measured on the render, 72% let the blurred white of the page behind lift the
+   ground under the nav links to 3.99:1. At 82% the same content reads 5.6:1, and
+   even a pure white ground behind the pill leaves 4.7:1 for the links.
+
+   How much of it stands is the scroll offset, written into `--surface` by the
+   header's script and read here. A class that switched the surface on had two
+   faults the owner saw: the opacity was animated while `visibility` waited out a
+   delay, so the bar could be read over the page's own words before it had a
+   ground, and the arrival was a step rather than a fade. With the value itself
+   driven by the offset there is no threshold to jump at; the short transition
+   only smooths between frames. Where the script never runs, `--surface` falls
+   back to 1 and the bar is served readable. */
+.bar__pill::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, .10);
+  background: rgba(20, 22, 28, .82);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  opacity: var(--surface, 1);
+  transition: opacity .12s linear;
+}
+
+/* The blur is what costs while the surface is invisible; it arrives with it. */
+.bar.is-scrolled .bar__pill::before {
+  border-color: rgba(255, 255, 255, .10);
+}
+
+.bar__mark {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--text);
+}
+
+.bar__nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* The bar stands over the hero's glow, the lightest ground the page has, and
+   over its own fill once scrolled: the link's grey clears AA on both. */
+.bar__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  line-height: 1;
+  color: var(--muted-2);
+  transition: color .18s ease, background-color .18s ease;
+}
+
+.bar__link:hover {
+  background: rgba(255, 255, 255, .06);
+  color: var(--text);
+}
+
+.bar__icon {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+
+/* The strip floats over the page, so the page's first row starts below it: the
+   50 of the strip plus the 76 the hero already carried, 50 plus 62 when narrow. */
+body .hero { padding-top: 126px; }
+
+/* The bar would cover the heading the anchor lands on. */
+body #install { scroll-margin-top: 74px; }
+
+@media (max-width: 720px) {
+  body .hero { padding-top: 112px; }
+}
+
+/* Icons alone below the width the three labels need. The link keeps its name in
+   aria-label, so nothing is lost to a reader of the page. */
+@media (max-width: 620px) {
+  .bar__pill { padding: 0 6px 0 12px; }
+  .bar__label { display: none; }
+}
+
+/* ---------------------------------------------------------------- backdrop */
+
+/* A faint dot grid and two soft glows — the accent and the depth glow #1a3870.
+   Purely decorative: nothing is read here. */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg__grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 55% at 50% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(ellipse 90% 55% at 50% 0%, #000 0%, transparent 72%);
+}
+
+.bg__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+.bg__glow--hero {
+  top: -320px;
+  left: 50%;
+  width: min(960px, 120vw);
+  height: 620px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 50% 50%, rgba(86, 134, 254, .30), rgba(26, 56, 112, .10) 55%, transparent 72%);
+}
+
+.bg__glow--deep {
+  top: 560px;
+  left: 50%;
+  width: min(1280px, 150vw);
+  height: 520px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 50% 50%, rgba(26, 56, 112, .55), transparent 68%);
+}
+
+/* ------------------------------------------------------------------- type */
+
+.h1 {
+  font-size: clamp(34px, 5.2vw, 56px);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.h2 {
+  font-size: clamp(26px, 3.2vw, 32px);
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.lede {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------------- hero */
+
+.hero {
+  padding: 76px 0 44px;
+  text-align: center;
+}
+
+.hero__inner { display: flex; flex-direction: column; align-items: center; }
+
+/* The name and the licence, on one line. Two small centred labels stacked —
+   wordmark above a badge — is the template tell the references avoid: both
+   open on the headline. One row keeps the name without spending 41px of the
+   first screen on a second label. */
+.hero__top {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero__sep {
+  /* Reads as punctuation, but it is still a glyph on the page and is measured
+     like one. */
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* The brand line: the product's name before anything else on the page, at the
+   page's own overline role. No mark, no image — one word. */
+.brand {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--link-hover);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 13px 5px 11px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .03);
+  color: var(--link-hover);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(86, 134, 254, .18);
+}
+
+/* Two lines, not three: the measure is what decides it, and the balance pass
+   splits it evenly once the column is wide enough to hold half the sentence. */
+.hero .h1 {
+  max-width: 19ch;
+  margin-top: 24px;
+}
+
+.hero .lede {
+  max-width: 620px;
+  margin-top: 20px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -.01em;
+  transition: background-color .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.btn--primary {
+  background: var(--accent-fill);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(43, 79, 214, .30);
+}
+
+.btn--primary:hover {
+  background: var(--accent-fill-hover);
+}
+
+.btn--quiet {
+  border-color: var(--hairline);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+}
+
+.btn--quiet:hover {
+  border-color: var(--hairline-strong);
+  background: rgba(255, 255, 255, .05);
+  color: var(--link-hover);
+}
+
+/* -------------------------------------------------------- the product mock */
+
+/* The picture of the product: divs and CSS, so it stays sharp and can move.
+   Every string inside it is a line of the plugin sources; none of it is read
+   aloud — the whole block is one decorative drawing. Type inside it is 10-13px,
+   which is where a real panel of that width sets its body. */
+.mockSection {
+  position: relative;
+  padding: 18px 0 74px;
+}
+
+.mockWrap {
+  position: relative;
+  width: 100%;
+  /* 1120 + the two 24px gutters: the window itself measures 1120 wide. */
+  max-width: 1168px;
+  margin: 0 auto;
+  padding: 0 24px;
+  transform: translateY(var(--parallax, 0px));
+}
+
+/* The highlight that follows the pointer, and the glow that stands behind the
+   window. Neither bleeds sideways: the page must never scroll horizontally. */
+.mockGlow {
+  position: absolute;
+  inset: -8% 0 -12%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(340px circle at var(--px, 50%) var(--py, 45%), rgba(86, 134, 254, .30), transparent 68%),
+    radial-gradient(ellipse at 50% 45%, rgba(26, 56, 112, .50), transparent 72%);
+  filter: blur(52px);
+}
+
+.mock {
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: var(--radius-card);
+  background: var(--win);
+  overflow: hidden;
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, .05) inset,
+    0 20px 40px rgba(0, 0, 0, .45),
+    0 50px 110px rgba(0, 0, 0, .55);
+  animation: float 12s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.mock__chrome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 38px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--win-line);
+  background: var(--win-bar);
+}
+
+.mock__dots { display: flex; gap: 6px; }
+
+.mock__dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .30);
+}
+
+.mock__profile {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.mock__body { display: flex; }
+
+/* The application's own sidebar: the platform's panel rows, the product's row
+   marked, and the session list carrying the room between them. */
+.mock__app {
+  flex: 0 0 188px;
+  width: 188px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 10px;
+  border-right: 1px solid var(--win-line);
+  background: var(--win-rail);
+}
+
+.mock__appmark {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 10px;
+  margin-bottom: 8px;
+}
+
+.mock__glyph {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: linear-gradient(140deg, var(--accent), var(--accent-fill));
+}
+
+.mock__approw {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.mock__approw--on {
+  background: rgba(86, 134, 254, .14);
+  color: var(--text);
+}
+
+/* The session list. The rows carry no words: a session's own title is the
+   user's, and a title invented here would be this drawing's lie. */
+.mock__group { margin-top: 14px; }
+
+.mock__grouplabel {
+  padding: 0 10px 6px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.mock__session {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 10px;
+}
+
+.mock__session span {
+  height: 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, .11);
+}
+
+.mock__session span:first-child {
+  flex: none;
+  width: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .22);
+}
+
+.mock__session span:last-child { flex: 1 1 auto; }
+
+.mock__session--on span:first-child { background: var(--accent); }
+
+.mock__appfoot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 12px;
+}
+
+.mock__ring {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+}
+
+/* The panel rail: the product's own sections, 188px as the page draws them. */
+.mock__rail {
+  flex: 0 0 188px;
+  width: 188px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 12px 0;
+  border-right: 1px solid var(--win-line);
+  background: var(--win-rail);
+}
+
+.mock__railtitle {
+  padding: 0 12px;
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 22px;
+  color: var(--text);
+}
+
+.mock__railrow {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.mock__railrow--on {
+  background: var(--win-soft);
+  color: var(--text);
+}
+
+.mock__pane {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 28px 24px;
+}
+
+.mock__card { display: flex; flex-direction: column; gap: 7px; }
+
+.mock__title {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 23px;
+  color: var(--text);
+}
+
+.mock__name {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 17px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.mock__desc {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--muted-2);
+  max-width: 74ch;
+}
+
+.mock__sections {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.mock__sectionhead {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mock__sectiontitle {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--text);
+}
+
+.mock__count {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+/* The rows the store holds and the live graph does not carry: their ids alone,
+   under the count that says how many of them there are. */
+.mock__missing { margin-top: 7px; }
+
+.mock__missingrow {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+/* The server card: the host's own box, 12px 14px of padding and a hairline. */
+.mock__server {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .035);
+}
+
+.mock__serverhead { display: flex; align-items: center; gap: 10px; }
+
+.mock__servertitle {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mock__servername {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--text);
+}
+
+/* The state of a connection stands beside the name of the thing it is about. */
+.mock__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.mock__target {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+.mock__chip {
+  flex: none;
+  padding: 1px 6px;
+  border: 1px solid var(--win-line);
+  border-radius: 999px;
+  font-size: 9.5px;
+  line-height: 14px;
+  color: var(--muted);
+}
+
+.mock__url {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The switch keeps the host's own geometry: 36 by 20, a 16px thumb, 2px of air. */
+.mock__switch {
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 20px;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .18);
+}
+
+.mock__switch--on { background: var(--accent); }
+
+.mock__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.mock__switch--on .mock__thumb { transform: translateX(16px); }
+
+.mock__tools {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+.mock__tools b { font-weight: 600; color: var(--strong); }
+
+.mock__addrow { display: flex; margin-top: 8px; }
+
+/* The host's own dashed box, at the width of the words in it. */
+.mock__addmore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 18px;
+  border: 1px dashed rgba(255, 255, 255, .24);
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* -------------------------------------------------------------- bento grid */
+
+.bento { padding: 0 0 96px; }
+
+.bento__head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 60ch;
+  margin-bottom: 32px;
+}
+
+.bento__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  transition: transform .2s ease, border-color .2s ease, background-color .2s ease;
+}
+
+.cell:hover {
+  transform: translateY(-2px);
+  border-color: var(--hairline-strong);
+  background: var(--surface-2);
+}
+
+.cell--wide { grid-column: span 2; }
+
+.cell__visual {
+  display: flex;
+  align-items: center;
+  min-height: 122px;
+  padding: 13px 14px;
+  border: 1px solid rgba(255, 255, 255, .07);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .025);
+}
+
+.cell__title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  line-height: 1.3;
+}
+
+.cell__text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* The miniatures. Decorative, and each one drawn from the product's own
+   vocabulary at the size that vocabulary is drawn at. */
+.cell__visual > * { width: 100%; }
+
+.mini {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 15px;
+  color: var(--muted);
+}
+
+.mini__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.mini__title { color: var(--strong); font-weight: 600; }
+
+.mini__note { color: var(--dim); font-size: 9.5px; }
+
+.mini__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.mini__row > .mini__grow { flex: 1 1 auto; min-width: 0; }
+
+.mini__id {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini__dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.mini__dot--off { background: rgba(255, 255, 255, .22); }
+
+.mini__tag {
+  flex: none;
+  padding: 1px 6px;
+  border: 1px solid var(--win-line);
+  border-radius: 999px;
+  font-size: 9px;
+  line-height: 13px;
+  color: var(--dim);
+}
+
+.mini__tag--on { border-color: rgba(86, 134, 254, .5); color: var(--link-hover); }
+
+.mini__switch {
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: 15px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.mini__switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 13px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.mini__mark {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, .24);
+}
+
+.mini__mark--round { border-radius: 50%; }
+.mini__mark--on { background: var(--accent); }
+
+/* The rules cell: a ticked list, one row per convention. */
+/* The cells' miniatures are objects, not placeholders: each one is a dark well
+   cut into the plate, holding the thing it stands for — a component list, a
+   limit gauge with its mark, a model's effort picker, a ticked rule list. The
+   well is darker than the plate on purpose: a dim 9.5px label clears AA there
+   (5.5:1) and would not on a lighter card. */
+.mini--card {
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, .22);
+}
+
+/* A count line longer than the head takes its own line rather than breaking
+   mid-phrase, which is what happens at 375px where the cells are one column. */
+.mini__head { flex-wrap: wrap; }
+
+/* Where two or more cells share a row, their plates are one height, so the cell
+   titles line up across the row instead of stepping with each miniature. */
+@media (min-width: 621px) {
+  .cell__visual { min-height: 164px; }
+}
+
+/* The limiter's meter: a track, the usage that has run past the limit mark. */
+.mini__gauge {
+  position: relative;
+  height: 8px;
+  margin: 3px 0 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .10);
+}
+
+.mini__gauge-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 18%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(86, 134, 254, .90), rgba(86, 134, 254, .45));
+}
+
+.mini__gauge::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  right: 38%;
+  width: 2px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, .55);
+}
+
+/* A model's reasoning levels: one segmented picker per row. */
+.mini__segs {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 1px solid var(--win-line);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.mini__seg {
+  flex: 1 1 0;
+  padding: 2px 0;
+  text-align: center;
+  font-size: 9px;
+  line-height: 13px;
+  color: var(--dim);
+}
+
+.mini__seg + .mini__seg { border-left: 1px solid var(--win-line); }
+
+.mini__seg--on {
+  background: rgba(86, 134, 254, .20);
+  color: var(--link-hover);
+}
+
+/* The dashed row the host draws under the servers it already has. */
+.mini__add {
+  padding: 2px 8px;
+  border: 1px dashed rgba(255, 255, 255, .24);
+  border-radius: 7px;
+  font-size: 9px;
+  line-height: 13px;
+  color: var(--dim);
+}
+
+/* A rule that is in force carries a tick, so the cell reads as a checklist
+   before its caption is read. */
+.mini__check {
+  position: relative;
+  flex: none;
+  width: 13px;
+  height: 13px;
+  border: 1px solid rgba(86, 134, 254, .55);
+  border-radius: 4px;
+  background: rgba(86, 134, 254, .22);
+}
+
+.mini__check::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 7px;
+  border-right: 1.5px solid #9db9ff;
+  border-bottom: 1.5px solid #9db9ff;
+  transform: rotate(42deg);
+}
+
+/* ------------------------------------------------------------------ install */
+
+.install { padding: 0 0 96px; text-align: center; }
+
+.install__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.term {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-code);
+  background: #0b0d11;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+}
+
+.term__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px 10px 14px;
+  border-bottom: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, .02);
+}
+
+.term__dots { display: flex; gap: 6px; }
+
+.term__dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .30);
+}
+
+.copy {
+  flex: none;
+  padding: 5px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.copy:hover {
+  background: rgba(255, 255, 255, .07);
+  border-color: var(--hairline-strong);
+  color: var(--link-hover);
+}
+
+.term__body {
+  margin: 0;
+  padding: 18px 16px;
+  overflow-x: auto;
+}
+
+.term__body code {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--code);
+  white-space: pre;
+}
+
+.term__prompt { color: var(--accent); user-select: none; }
+
+/* Two doors of equal weight: the terminal the visitor already knows, and the
+   application's own plugin dialog. Both sit on the code block's dark ground so
+   neither reads as the lesser path. */
+.install__ways {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+  max-width: 1020px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.way {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.way__caption {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--muted);
+}
+
+.way .term { flex: 1 1 auto; width: 100%; }
+
+.appdoor {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-code);
+  background: #0b0d11;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+}
+
+.appdoor__steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.appdoor__step {
+  padding: 5px 11px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .04);
+  color: var(--text);
+}
+
+.appdoor__sep { color: var(--dim); }
+
+/* The dialog's own field, at the size the address is typed at. */
+.appdoor__field {
+  display: flex;
+  align-items: center;
+  padding: 12px 13px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .03);
+}
+
+.appdoor__addr {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--code);
+  overflow-wrap: anywhere;
+}
+
+/* The doors stack before the terminal's one line stops fitting its column. */
+@media (max-width: 1023px) {
+  .install__ways {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+  }
+}
+
+/* ---------------------------------------------------------------- projects */
+
+.eco { padding: 0 0 104px; }
+
+.eco__head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 60ch;
+  margin-bottom: 32px;
+}
+
+.eco__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 26px 24px 24px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  transition: transform .2s ease, border-color .2s ease, background-color .2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--hairline-strong);
+  background: var(--surface-2);
+}
+
+.card__title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  line-height: 1.3;
+}
+
+.card__text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+/* The card's action reads as an action: the accent carries its border and its
+   word, and a press fills it. */
+.card__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  margin-top: auto;
+  padding: 0 16px;
+  border: 1px solid rgba(86, 134, 254, .45);
+  border-radius: 999px;
+  background: rgba(86, 134, 254, .12);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--link-hover);
+  transition: background-color .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.card__action::after {
+  content: "→";
+  font-family: var(--sans);
+}
+
+.card__action:hover {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------------ footer */
+
+/* The licence word is the repository's own fact, so the README keeps it and this
+   row keeps the year, the name and the way to the project. */
+.footer {
+  padding: 30px 0 40px;
+  border-top: 1px solid var(--hairline);
+}
+
+/* One quiet row: the year and the name at the left, the project's door at the
+   right, as a mark. */
+.footer__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.footer .footer__copy { font-family: var(--sans); }
+
+.footer__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  color: var(--muted-2);
+  border: 1px solid var(--hairline);
+  transition: color .18s ease, border-color .18s ease, background-color .18s ease;
+}
+
+.footer__link:hover {
+  color: var(--text);
+  border-color: var(--hairline-strong);
+  background: rgba(255, 255, 255, .05);
+}
+
+.footer__icon { width: 14px; height: 14px; fill: currentColor; }
+
+.footer p {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------------ motion */
+
+/* Content is visible by default. The entrance and the reveals exist only under
+   the `js` class, so a page with JavaScript off is complete and still. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  filter: blur(6px);
+  transition: opacity .7s ease, transform .7s ease, filter .7s ease;
+}
+
+.js .reveal--1 { transition-delay: .1s; }
+.js .reveal--2 { transition-delay: .2s; }
+
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 1040px) {
+  .mock__app { display: none; }
+}
+
+@media (max-width: 900px) {
+  .bento__grid { grid-template-columns: repeat(2, 1fr); }
+  .eco__grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .hero { padding: 62px 0 36px; }
+  .mockSection { padding-bottom: 54px; }
+  .bento { padding-bottom: 72px; }
+  .install { padding-bottom: 72px; }
+  .eco { padding-bottom: 78px; }
+
+  /* The rail turns into a tab strip: the application keeps its four sections
+     and stops carrying a column it no longer has room for. */
+  .mock__body { flex-direction: column; }
+  .mock__rail {
+    flex: none;
+    width: auto;
+    flex-direction: row;
+    gap: 6px;
+    padding: 10px;
+    border-right: 0;
+    border-bottom: 1px solid var(--win-line);
+    overflow: hidden;
+  }
+  .mock__railtitle { display: none; }
+  .mock__railrow { flex: none; padding: 0 10px; font-size: 12px; }
+  .mock__pane { padding: 18px 16px 20px; }
+}
+
+@media (max-width: 620px) {
+  .wrap { padding: 0 18px; }
+  .mockWrap { padding: 0 18px; }
+  .bento__grid { grid-template-columns: 1fr; }
+  .cell--wide { grid-column: auto; }
+  .hero .lede { font-size: 16px; }
+  /* The two calls to action stack whole rather than as two ragged pills. */
+  .actions { width: 100%; }
+  .actions .btn { flex: 1 1 100%; }
+  /* The command is shown whole rather than cut: it breaks between its words,
+     and its longest token still fits one line at this size. */
+  .term__body { overflow-x: visible; padding: 14px 12px; }
+  .term__body code { font-size: 13px; white-space: pre-wrap; overflow-wrap: break-word; }
+  .mock__pane { padding: 16px 13px 18px; }
+  .mock__server { padding: 11px 12px; }
+  .card { padding: 22px 18px 20px; }
+}
+
+/* Everything above collapses to a still page. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+
+  .mock { animation: none; }
+  .mockWrap { transform: none; transition: none; }
+
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

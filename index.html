@@ -1,580 +1,448 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>body{background:#1c1c1c;color:#ededed;font-size:16px;font-family:system-ui,-apple-system,sans-serif;margin:0}</style>
-  <title>Coreness — Open-source продукты для AI-агентов и автоматизации</title>
-  <meta name="description" content="Coreness и Coreness Flow: платформа для ботов и десктопный event-driven агент. Open-source, self-hosted, YAML, LLM.">
-  <meta name="keywords" content="AI-агенты, чат-боты, Coreness, Coreness Flow, open-source, self-hosted, YAML, автоматизация, LLM">
-  <link rel="icon" type="image/png" href="images/logo-dark.png">
-  <link rel="canonical" href="https://coreness.tech/">
-  <link rel="sitemap" type="application/xml" href="https://coreness.tech/sitemap.xml">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Coreness — An agent that answers to the project.</title>
+<meta name="description" content="A small family of projects about governed agent work: what a project accepts, remembers and allows to be spent — written down, so the agent can be held to it.">
+<meta property="og:title" content="Coreness">
+<meta property="og:description" content="A small family of projects about governed agent work: what a project accepts, remembers and allows to be spent — written down, so the agent can be held to it.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%230f1115'/%3E%3Ctext%20x='16'%20y='22'%20text-anchor='middle'%20font-family='monospace'%20font-size='18'%20font-weight='700'%20fill='%235686fe'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script>
+/* The page is complete without this. The `js` class is what arms the entrance
+   and the scroll reveals; the pointer highlight and the scroll parallax are
+   armed only where the visitor has not asked for a still page. */
+(function () {
+  var root = document.documentElement;
+  if (!('IntersectionObserver' in window) || !root.classList) return;
+  root.classList.add('js');
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://coreness.tech/">
-  <meta property="og:title" content="Coreness — Open-source продукты для AI-агентов и автоматизации">
-  <meta property="og:description" content="Coreness и Coreness Flow: платформа для ботов и десктопный event-driven агент. Open-source, self-hosted, YAML, LLM.">
-  <meta property="og:image" content="https://coreness.tech/images/logo-dark.png">
-  <meta property="og:locale" content="ru_RU">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=optional" rel="stylesheet">
-  
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "name": "Coreness",
-        "url": "https://coreness.tech",
-        "description": "Coreness и Coreness Flow: open-source продукты для AI-агентов и автоматизации. Платформа для ботов и десктопный агент.",
-        "inLanguage": "ru"
-      },
-      {
-        "@type": "SoftwareApplication",
-        "name": "Coreness",
-        "description": "Мультитенантная платформа для создания AI-агентов и чат-ботов. Логика в YAML. Open-source, self-hosted.",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Docker",
-        "url": "https://coreness.tech",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-      },
-      {
-        "@type": "SoftwareApplication",
-        "name": "Coreness Flow",
-        "description": "Event-driven десктопный агент: сценарии на YAML, триггеры (чат, webhook, cron), плагины и LLM/RAG. Windows, Electron + React.",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Windows",
-        "url": "https://github.com/Vensus137/Coreness-Flow",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-      }
-    ]
-  }
-  </script>
-  
-  <style>
-    * {
-      scroll-behavior: smooth;
-    }
-    
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background-color: #1c1c1c;
-      color: #ededed;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    
-    .gradient-text {
-      background: linear-gradient(to right, #3ecf8e, #2fb574);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .brand-name {
-      color: #3ecf8e;
-      font-weight: 500;
-    }
-    
-    .feature-card {
-      background: linear-gradient(to bottom, rgba(62, 207, 142, 0.05), rgba(62, 207, 142, 0.02));
-      border: 1px solid rgba(62, 207, 142, 0.1);
-      transition: all 0.3s ease;
-    }
-    
-    .feature-card:hover {
-      border-color: rgba(62, 207, 142, 0.3);
-      background: linear-gradient(to bottom, rgba(62, 207, 142, 0.08), rgba(62, 207, 142, 0.03));
-      transform: translateY(-2px);
-    }
-    
-    .nav-link {
-      transition: color 0.2s ease;
-    }
-    
-    .nav-link:hover {
-      color: #3ecf8e;
-    }
-    
-    .btn-primary {
-      background: #3ecf8e;
-      color: #000;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-    
-    .btn-primary:hover {
-      background: #2fb574;
-      transform: translateY(-1px);
-    }
-    
-    .btn-secondary {
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #ededed;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-    
-    .btn-secondary:hover {
-      border-color: rgba(255, 255, 255, 0.3);
-      background: rgba(255, 255, 255, 0.05);
-    }
-    
-    .code-spotlight {
-      position: relative;
-      background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(15, 15, 15, 0.95) 100%);
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(62, 207, 142, 0.1);
-      box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.3),
-        0 0 60px rgba(62, 207, 142, 0.03);
-      backdrop-filter: blur(10px);
-    }
-    
-    .code-spotlight::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 50% 0%, rgba(62, 207, 142, 0.08) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    
-    .code-header {
-      padding: 12px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      background: rgba(0, 0, 0, 0.2);
-    }
-    
-    .code-content {
-      padding: 20px;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .yaml-key {
-      color: #3ecf8e;
-    }
-    
-    .yaml-string {
-      color: #a8dadc;
-    }
-    
-    .yaml-comment {
-      color: #6c757d;
-      font-style: italic;
-    }
-    
-    .yaml-value {
-      color: #f1fa8c;
-    }
-    
-    .yaml-list {
-      color: #ff79c6;
-    }
-    
-    .demo-container {
-      position: relative;
-      max-width: 420px;
-      margin: 0 auto;
-    }
-    
-    .demo-gif {
-      border-radius: 12px;
-      box-shadow: 
-        0 0 0 1px rgba(62, 207, 142, 0.1),
-        0 20px 40px -10px rgba(0, 0, 0, 0.4),
-        0 40px 80px -20px rgba(0, 0, 0, 0.3),
-        0 0 100px rgba(62, 207, 142, 0.05);
-    }
-    
-    #quickstart .code-spotlight {
-      height: 270px;
-      display: flex;
-      flex-direction: column;
-    }
-    #quickstart .code-content {
-      flex: 1;
-      min-height: 0;
-      overflow: auto;
-    }
-  </style>
-
-  <!-- Tailwind CSS (must be in head to prevent FOUC) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              DEFAULT: '#3ecf8e',
-              dark: '#2fb574',
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-          },
+  document.addEventListener('DOMContentLoaded', function () {
+    var seen = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          entries[i].target.classList.add('is-in');
+          seen.unobserve(entries[i].target);
         }
       }
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
+
+    var revealed = document.querySelectorAll('.reveal');
+    for (var j = 0; j < revealed.length; j++) seen.observe(revealed[j]);
+
+    var button = document.querySelector('.copy');
+    var command = document.getElementById('install-command');
+    if (button && command) {
+      var resting = button.textContent;
+      var timer = null;
+      var say = function (word) {
+        button.textContent = word;
+        if (timer !== null) clearTimeout(timer);
+        timer = setTimeout(function () { button.textContent = resting; }, 2000);
+      };
+      var selectLine = function () {
+        var range = document.createRange();
+        range.selectNodeContents(command);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      };
+      button.addEventListener('click', function () {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(command.textContent).then(
+            function () { say('Copied'); },
+            function () { selectLine(); say('Copy failed'); }
+          );
+          return;
+        }
+        selectLine();
+        say('Copy failed');
+      });
     }
-  </script>
+
+    /* A still page is a promise: nothing below runs where it was asked for. */
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var wrap = document.querySelector('.mockWrap');
+    var section = document.querySelector('.mockSection');
+    if (!wrap) return;
+
+    /* The glow follows the pointer across the window. */
+    var lit = function (event) {
+      var r = wrap.getBoundingClientRect();
+      var x = ((event.clientX - r.left) / r.width) * 100;
+      var y = ((event.clientY - r.top) / r.height) * 100;
+      wrap.style.setProperty('--px', Math.max(0, Math.min(100, x)).toFixed(1) + '%');
+      wrap.style.setProperty('--py', Math.max(0, Math.min(100, y)).toFixed(1) + '%');
+    };
+    wrap.addEventListener('pointermove', lit);
+    wrap.addEventListener('pointerleave', function () {
+      wrap.style.removeProperty('--px');
+      wrap.style.removeProperty('--py');
+    });
+
+    /* The window drifts against the scroll, by twenty pixels at most. */
+    if (!section) return;
+    var frame = null;
+    var place = function () {
+      frame = null;
+      var r = section.getBoundingClientRect();
+      var t = (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight;
+      t = Math.max(-1, Math.min(1, t));
+      wrap.style.setProperty('--parallax', (t * 20).toFixed(1) + 'px');
+    };
+    var onScroll = function () {
+      if (frame === null) frame = requestAnimationFrame(place);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    place();
+  });
+}());
+</script>
 </head>
-<body class="antialiased">
-  <!-- Header -->
-  <header class="fixed top-0 left-0 right-0 z-50" style="backdrop-filter: blur(12px); background-color: rgba(28, 28, 28, 0.8); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex items-center space-x-8">
-          <a href="#hero" class="text-xl font-semibold gradient-text">Coreness</a>
-          <div class="hidden md:flex space-x-6 text-sm">
-            <a href="#products" class="nav-link text-gray-400">Продукты</a>
-            <a href="#examples" class="nav-link text-gray-400">Примеры</a>
-            <a href="#quickstart" class="nav-link text-gray-400">Быстрый старт</a>
-            <a href="#contact" class="nav-link text-gray-400">Контакты</a>
-          </div>
-        </div>
-        <div class="flex items-center space-x-4">
-          <button onclick="switchLanguage()" class="text-sm text-gray-400 hover:text-white transition">RU</button>
-          <a href="https://github.com/Vensus137/Coreness" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition" aria-label="GitHub">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-            </svg>
-          </a>
-        </div>
+<body>
+
+<header class="bar" id="site-bar">
+  <div class="wrap bar__strip">
+    <div class="bar__pill">
+      <a class="bar__mark" href="#top">Coreness</a>
+      <nav class="bar__nav" aria-label="Coreness elsewhere">
+        <a class="bar__link" href="https://github.com/Vensus137/Coreness-Kit" target="_blank" rel="noopener noreferrer" aria-label="Coreness Kit"><svg class="bar__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span class="bar__label">Coreness Kit</span></a>
+        <a class="bar__link" href="https://github.com/Vensus137/Coreness-DSH" target="_blank" rel="noopener noreferrer" aria-label="Coreness DSH"><svg class="bar__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span class="bar__label">Coreness DSH</span></a>
+        <a class="bar__link" href="https://t.me/vensus137" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg class="bar__icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M23.07 3.28 19.6 19.63c-.26 1.15-.94 1.44-1.9.9l-5.26-3.88-2.54 2.44c-.28.28-.52.52-1.06.52l.38-5.36 9.75-8.81c.42-.38-.09-.59-.66-.21L6.27 13.03.98 11.38c-1.15-.36-1.17-1.15.24-1.7L21.6 1.79c.96-.35 1.8.22 1.47 1.49Z"/></svg><span class="bar__label">Telegram</span></a>
+      </nav>
+    </div>
+  </div>
+</header>
+<script>
+/* The pill's surface follows the page rather than switching on it: its opacity
+   is written from the scroll offset itself, so the fade has no threshold to
+   jump at and no delay to be seen through. The stylesheet serves the pill, so a
+   page whose script never runs keeps a readable bar. */
+(function () {
+  var bar = document.getElementById('site-bar');
+  if (!bar || !window.addEventListener || !bar.style) return;
+  var FADE = 140; // the distance over which the surface arrives
+  var ticking = false;
+  var place = function () {
+    ticking = false;
+    var y = window.scrollY || window.pageYOffset || 0;
+    var t = y <= 0 ? 0 : y >= FADE ? 1 : y / FADE;
+    // Eased, because a linear fade reads as a switch at its ends.
+    var eased = t * t * (3 - 2 * t);
+    bar.style.setProperty('--surface', eased.toFixed(3));
+    bar.classList.toggle('is-scrolled', eased > 0.5);
+  };
+  var onScroll = function () {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(place);
+  };
+  place();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+}());
+</script>
+<div class="bg" aria-hidden="true">
+  <div class="bg__grid"></div>
+  <div class="bg__glow bg__glow--hero"></div>
+  <div class="bg__glow bg__glow--deep"></div>
+</div>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap hero__inner">
+      <p class="hero__top reveal"><span class="brand">Coreness</span><span class="hero__sep" aria-hidden="true">·</span><span class="badge"><span class="badge__dot" aria-hidden="true"></span>Open source · MIT</span></p>
+      <h1 class="h1 reveal reveal--1">An agent that answers to the project.</h1>
+      <p class="lede reveal reveal--2">A small family of projects about governed agent work: what a project accepts, remembers and allows to be spent — written down, so the agent can be held to it.</p>
+      <div class="actions reveal reveal--2">
+        <a class="btn btn--primary" href="#install">Install Coreness</a>
+        <a target="_blank" rel="noopener noreferrer" class="btn btn--quiet" href="https://github.com/Vensus137/Coreness-Kit">Coreness Kit</a>
       </div>
-    </nav>
-  </header>
+    </div>
+  </section>
 
-  <main class="pt-16">
-    <!-- Hero Section -->
-    <section id="hero" class="relative py-20 sm:py-32 overflow-hidden">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-4xl mx-auto">
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            Open-source продукты для<br>
-            <span class="gradient-text">AI-агентов и автоматизации</span>
-          </h1>
-          <p class="text-lg sm:text-xl text-gray-400 mb-10 leading-relaxed max-w-3xl mx-auto">
-            <span class="text-white">Платформа для мультитенантных AI-ботов</span> и <span class="text-white">десктопный event-driven агент</span>. Логика в YAML, интеграция с LLM, self-hosted — полный контроль над данными и инфраструктурой.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <a href="#products" class="btn-primary inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium rounded-md">
-              К продуктам
-            </a>
-            <a href="https://github.com/Vensus137/Coreness" target="_blank" rel="noopener" class="btn-secondary inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium rounded-md">
-              GitHub
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- The picture of the product. Decorative: a screen reader is given the copy
+       above and below, never a wall of interface text. -->
+  <section class="mockSection reveal">
+    <div class="mockWrap">
+      <div class="mockGlow" aria-hidden="true"></div>
+      <div class="mock" aria-hidden="true">
 
-    <!-- Products Section -->
-    <section id="products" class="py-20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-          <h2 class="text-3xl sm:text-4xl font-bold mb-4">Продукты</h2>
-          <p class="text-gray-400 text-lg max-w-2xl mx-auto">
-            <span class="text-white font-medium">Open-source</span> проекты под MIT лицензией. <span class="text-white font-medium">Self-hosted</span> с доступной документацией и исходным кодом на GitHub.
-          </p>
+        <div class="mock__chrome">
+          <span class="mock__dots"><span></span><span></span><span></span></span>
+          <span class="mock__profile">desktop</span>
         </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <div class="feature-card rounded-xl p-6 flex flex-col">
-            <h3 class="text-xl font-semibold text-white mb-2"><span class="brand-name">Coreness</span></h3>
-            <p class="text-gray-400 text-sm mb-4 flex-grow">
-              Мультитенантная платформа для <span class="text-white">production-ready</span> AI-агентов и чат-ботов. Один экземпляр — множество изолированных ботов, полная документация, развёртывание за минуты.
-            </p>
-            <ul class="text-gray-400 text-sm space-y-1.5 mb-4">
-              <li>• Декларативная логика в <span class="text-white">YAML</span> — сложные сценарии без кода, изоляция данных через <span class="text-white">RLS</span></li>
-              <li>• <span class="text-white">LLM и RAG</span>: OpenAI, Anthropic, Google, DeepSeek; pgvector, рассылки и отчёты по расписанию</li>
-              <li>• <span class="text-white">Плагинная архитектура</span>, фоновые задачи, готовый Master Bot для управления через Telegram</li>
-            </ul>
-            <div class="flex flex-wrap gap-3 mt-auto">
-              <a href="https://github.com/Vensus137/Coreness" target="_blank" rel="noopener" class="btn-primary inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md">GitHub</a>
-              <a href="https://docs.coreness.tech" target="_blank" rel="noopener" class="btn-secondary inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md">Документация</a>
+
+        <div class="mock__body">
+
+          <div class="mock__app">
+            <div class="mock__appmark"><span class="mock__glyph"></span></div>
+            <div class="mock__approw">Plugins</div>
+            <div class="mock__approw mock__approw--on">Coreness</div>
+            <div class="mock__group">
+              <div class="mock__grouplabel">Sessions</div>
+              <div class="mock__session mock__session--on"><span></span><span></span></div>
+              <div class="mock__session"><span></span><span></span></div>
+              <div class="mock__session"><span></span><span></span></div>
+              <div class="mock__session"><span></span><span></span></div>
+            </div>
+            <div class="mock__appfoot">
+              <div class="mock__approw"><span class="mock__ring"></span>Widgets</div>
+              <div class="mock__approw">Settings</div>
             </div>
           </div>
-          <div class="feature-card rounded-xl p-6 flex flex-col">
-            <h3 class="text-xl font-semibold text-white mb-2"><span class="brand-name">Coreness Flow</span></h3>
-            <p class="text-gray-400 text-sm mb-4 flex-grow">
-              Десктопный агент, реагирующий на события: чат, webhook, cron. Сценарии в YAML, плагины с <span class="text-white">расширением UI</span> по аналогии с VS Code, <span class="text-white">LLM и RAG</span> полностью локально.
-            </p>
-            <ul class="text-gray-400 text-sm space-y-1.5 mb-4">
-              <li>• <span class="text-white">Event-driven</span> архитектура: триггеры → сценарии → плагины; async-действия без блокировки</li>
-              <li>• Плагины задают вкладки, сайдбар, настройки через contributes; <span class="text-white">BGE-M3 + Qdrant embedded</span></li>
-              <li>• <span class="text-white">Electron + React, Python backend</span>; один пользователь, все данные под вашим контролем</li>
-            </ul>
-            <div class="flex flex-wrap gap-3 mt-auto">
-              <a href="https://github.com/Vensus137/Coreness-Flow" target="_blank" rel="noopener" class="btn-primary inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md">GitHub</a>
+
+          <div class="mock__rail">
+            <div class="mock__railtitle">Coreness</div>
+            <div class="mock__railrow mock__railrow--on">The product</div>
+            <div class="mock__railrow">MCP servers</div>
+            <div class="mock__railrow">Rate limiter</div>
+            <div class="mock__railrow">Custom providers</div>
+          </div>
+
+          <div class="mock__pane">
+
+            <div class="mock__card">
+              <span class="mock__title">Coreness</span>
+              <p class="mock__name">@coreness/dsh</p>
+              <p class="mock__desc">The Coreness kit for DeepSeek Harness: a page of its own, the journal, the picture, the form of the profile's MCP servers, and the doors to providers that are not in the platform's own list — one bundle for a profile.</p>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Examples Section -->
-    <section id="examples" class="py-20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-          <h2 class="text-3xl sm:text-4xl font-bold mb-4">Примеры</h2>
-          <p class="text-gray-400 text-lg max-w-3xl mx-auto">
-            Конфигурации и демо.
-          </p>
-        </div>
+            <div class="mock__sections">
 
-        <h3 class="text-lg font-semibold text-white mb-4 text-center"><span class="brand-name">Coreness</span> — Master Bot</h3>
-        <p class="text-gray-400 text-sm text-center max-w-2xl mx-auto mb-8">
-          Готовый бот для управления платформой через Telegram. Пример команд и конфигурации:
-        </p>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto mb-12">
-          <div class="code-spotlight">
-            <div class="code-header">
-              <div class="text-xs text-gray-400 font-mono">commands.yaml</div>
-            </div>
-            <div class="code-content">
-              <pre class="text-xs leading-relaxed overflow-x-auto"><code><span class="yaml-key">start</span>:
-  <span class="yaml-key">description</span>: <span class="yaml-string">"Start Master Bot"</span>
-  
-  <span class="yaml-key">trigger</span>:
-    <span class="yaml-list">-</span> <span class="yaml-key">event_type</span>: <span class="yaml-string">"message"</span>
-      <span class="yaml-key">event_text</span>: <span class="yaml-string">"/start"</span>
-    <span class="yaml-list">-</span> <span class="yaml-key">event_type</span>: <span class="yaml-string">"callback"</span>
-      <span class="yaml-key">callback_data</span>: <span class="yaml-string">"start"</span>
-
-  <span class="yaml-key">step</span>:
-    <span class="yaml-list">-</span> <span class="yaml-key">action</span>: <span class="yaml-string">"execute_scenario"</span>
-      <span class="yaml-key">params</span>:
-        <span class="yaml-key">scenario</span>: <span class="yaml-string">"default_check"</span>
-    
-    <span class="yaml-list">-</span> <span class="yaml-key">action</span>: <span class="yaml-string">"send_message"</span>
-      <span class="yaml-key">params</span>:
-        <span class="yaml-key">text</span>: <span class="yaml-value">|
-          {_cache.translation.start}</span>
-        <span class="yaml-key">inline</span>: <span class="yaml-string">"{_cache.translation.start_inline}"</span></code></pre>
-            </div>
-          </div>
-          
-          <div class="code-spotlight">
-            <div class="code-header">
-              <div class="text-xs text-gray-400 font-mono">config.yaml</div>
-            </div>
-            <div class="code-content">
-              <pre class="text-xs leading-relaxed overflow-x-auto"><code><span class="yaml-key">i18n</span>:
-  <span class="yaml-key">available_languages</span>:
-    <span class="yaml-list">-</span> <span class="yaml-value">en</span>
-    <span class="yaml-list">-</span> <span class="yaml-value">ru</span>
-  <span class="yaml-key">default_language</span>: <span class="yaml-value">en</span>
-
-<span class="yaml-key">environments</span>:
-  <span class="yaml-key">available</span>:
-    <span class="yaml-list">-</span> <span class="yaml-value">test</span>
-    <span class="yaml-list">-</span> <span class="yaml-value">prod</span>
-  <span class="yaml-key">default</span>: <span class="yaml-value">prod</span>
-
-<span class="yaml-key">deployment</span>:
-  <span class="yaml-key">available_modes</span>:
-    <span class="yaml-list">-</span> <span class="yaml-value">docker</span>
-    <span class="yaml-list">-</span> <span class="yaml-value">native</span>
-  <span class="yaml-key">default</span>: <span class="yaml-value">docker</span></code></pre>
-            </div>
-          </div>
-        </div>
-        
-        <div class="demo-container mb-16">
-          <div class="text-center mb-6">
-            <p class="text-sm text-gray-400">Master Bot в действии</p>
-          </div>
-          <img src="images/master-bot-ru.gif" alt="Master Bot Example" class="demo-gif w-full" width="518" height="518">
-        </div>
-
-        <h3 class="text-lg font-semibold text-white mb-4 text-center"><span class="brand-name">Coreness Flow</span></h3>
-        <p class="text-gray-400 text-sm text-center max-w-2xl mx-auto mb-6">
-          Запуск приложения, главный чат и работа с диалогами. Подробнее — в <a href="https://github.com/Vensus137/Coreness-Flow" target="_blank" rel="noopener" class="text-brand hover:underline">репозитории</a>.
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <div class="text-center">
-            <p class="text-xs text-gray-400 mb-2">Сплеш-интро: запуск и главный чат</p>
-            <img src="https://habrastorage.org/webt/v9/ud/0t/v9ud0tfxjq0m7bmcea0dh1iplu8.gif" alt="Coreness Flow — сплеш-интро и главный чат" class="demo-gif w-full rounded-xl" width="560" height="auto">
-          </div>
-          <div class="text-center">
-            <p class="text-xs text-gray-400 mb-2">Чат: история и новые диалоги</p>
-            <img src="https://habrastorage.org/webt/j5/d_/dz/j5d_dzcamjcqndvciw8k5devyy4.gif" alt="Coreness Flow — чат" class="demo-gif w-full rounded-xl" width="560" height="auto">
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quick Start Section -->
-    <section id="quickstart" class="py-20">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl sm:text-4xl font-bold mb-4">Быстрый старт</h2>
-          <p class="text-gray-400 text-lg">Простая установка</p>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          <div class="min-w-0">
-            <h3 class="text-base font-semibold text-white mb-3"><span class="brand-name">Coreness</span></h3>
-            <div class="code-spotlight">
-              <div class="code-header">
-                <div class="text-xs text-gray-400 font-mono">Установка</div>
+              <div class="mock__section">
+                <div class="mock__sectionhead">
+                  <span class="mock__sectiontitle">Components</span>
+                  <span class="mock__count">8 total · 7 running · 1 not running</span>
+                </div>
+                <div class="mock__missing">
+                  <span class="mock__missingrow">coreness-oauth</span>
+                </div>
               </div>
-              <div class="code-content">
-                <pre class="text-sm leading-relaxed overflow-x-auto"><code><span class="yaml-comment"># Клонируйте репозиторий</span>
-<span class="yaml-key">git clone</span> https://github.com/Vensus137/Coreness.git
-<span class="yaml-key">cd</span> Coreness
 
-<span class="yaml-comment"># Запустите Core Manager</span>
-<span class="yaml-key">python</span> tools/core_manager/core_manager.py
+              <div class="mock__section">
+                <div class="mock__sectionhead">
+                  <span class="mock__sectiontitle">MCP servers</span>
+                  <span class="mock__count">2 total · 1 on · 1 off · 1 with tools</span>
+                </div>
 
-<span class="yaml-comment"># Выберите окружение и режим — утилита настроит всё</span></code></pre>
+                <div class="mock__server">
+                  <div class="mock__serverhead">
+                    <span class="mock__servertitle">
+                      <span class="mock__servername"><span class="mock__dot"></span>supabase</span>
+                      <span class="mock__target"><span class="mock__chip">streamable-http</span><span class="mock__url">https://mcp.supabase.com/mcp</span></span>
+                    </span>
+                    <span class="mock__switch mock__switch--on"><span class="mock__thumb"></span></span>
+                  </div>
+                  <p class="mock__tools"><b>Tools (1):</b> list_tables</p>
+                </div>
+
+                <div class="mock__server">
+                  <div class="mock__serverhead">
+                    <span class="mock__servertitle">
+                      <span class="mock__servername">context7</span>
+                      <span class="mock__target"><span class="mock__chip">streamable-http</span><span class="mock__url">https://mcp.context7.com/mcp</span></span>
+                    </span>
+                    <span class="mock__switch"><span class="mock__thumb"></span></span>
+                  </div>
+                  <p class="mock__tools">no tools yet</p>
+                </div>
+
+                <div class="mock__addrow"><span class="mock__addmore">Add a server</span></div>
               </div>
+
             </div>
-            <p class="mt-3 text-center">
-              <a href="https://docs.coreness.tech" target="_blank" rel="noopener" class="text-brand hover:text-brand-dark font-medium text-sm">Документация по развертыванию →</a>
-            </p>
           </div>
-          <div class="min-w-0">
-            <h3 class="text-base font-semibold text-white mb-3"><span class="brand-name">Coreness Flow</span></h3>
-            <div class="code-spotlight">
-              <div class="code-header">
-                <div class="text-xs text-gray-400 font-mono">Из исходников (Python 3.11, Node.js, Windows)</div>
-              </div>
-              <div class="code-content">
-                <pre class="text-xs sm:text-sm leading-relaxed overflow-x-auto whitespace-pre"><code><span class="yaml-comment"># Клонируйте репозиторий</span>
-<span class="yaml-key">git clone</span> https://github.com/Vensus137/Coreness-Flow.git
-<span class="yaml-key">cd</span> Coreness-Flow
 
-<span class="yaml-comment"># Установка и запуск с hot reload</span>
-<span class="yaml-key">pip install</span> -r requirements.txt
-<span class="yaml-key">cd</span> frontend && npm install && cd ..
-.\scripts\run-dev.ps1</code></pre>
-              </div>
-            </div>
-            <p class="mt-3 text-center text-gray-400 text-sm">
-              Или скачайте установщик из блока <strong class="text-white">Releases</strong> на GitHub.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-20">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl sm:text-4xl font-bold mb-6">Связь с разработчиком</h2>
-        <div class="text-base text-gray-400 space-y-4 mb-10 max-w-2xl mx-auto">
-          <p><span class="brand-name">Coreness</span> и <span class="brand-name">Coreness Flow</span> — <span class="text-white">open-source</span> под лицензией MIT.</p>
-          <p>Открыт для сотрудничества и предложений:</p>
-          <ul class="space-y-2.5 text-left max-w-xl mx-auto mt-6 text-sm">
-            <li class="flex items-start">
-              <span class="text-brand mr-3 mt-0.5">•</span>
-              <span>Консультации по внедрению и архитектуре</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-brand mr-3 mt-0.5">•</span>
-              <span>Сотрудничество и совместные проекты</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-brand mr-3 mt-0.5">•</span>
-              <span>Вопросы по разработке и развёртыванию</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-brand mr-3 mt-0.5">•</span>
-              <span>Обсуждение идей и вклад в open-source</span>
-            </li>
-          </ul>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
-          <a href="https://t.me/vensus137" target="_blank" rel="noopener" class="btn-primary inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium rounded-md">
-            Telegram
-          </a>
-          <a href="mailto:vensus137@yandex.com" class="btn-secondary inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium rounded-md">
-            vensus137@yandex.com
-          </a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="py-8 mt-20" style="border-top: 1px solid rgba(255, 255, 255, 0.05);">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-        <div class="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm">
-          <a href="https://github.com/Vensus137/Coreness" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">Coreness · GitHub</a>
-          <a href="https://github.com/Vensus137/Coreness-Flow" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">Coreness Flow · GitHub</a>
-          <a href="https://docs.coreness.tech" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">Документация</a>
-          <a href="https://t.me/vensus137" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">Telegram</a>
-        </div>
-        <div class="text-gray-400 text-sm">
-          © <span class="brand-name">Coreness</span> 2026
         </div>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <script>
-    // Language switcher
-    function switchLanguage() {
-      const currentLang = getCookie('lang') || 'ru';
-      const newLang = currentLang === 'ru' ? 'en' : 'ru';
-      setCookie('lang', newLang, 365);
-      // Save scroll position
-      sessionStorage.setItem('scrollPos', window.scrollY);
-      window.location.href = newLang === 'en' ? '/en' : '/';
-    }
-    
-    // Cookie helpers
-    function setCookie(name, value, days) {
-      const expires = new Date(Date.now() + days * 864e5).toUTCString();
-      document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
-    }
-    
-    function getCookie(name) {
-      return document.cookie.split('; ').reduce((r, v) => {
-        const parts = v.split('=');
-        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
-      }, '');
-    }
-    
-    // Auto-detect language on first visit
-    if (!getCookie('lang')) {
-      const browserLang = navigator.language || navigator.userLanguage;
-      const lang = browserLang.startsWith('ru') ? 'ru' : 'en';
-      setCookie('lang', lang, 365);
-      if (lang === 'en' && !window.location.pathname.startsWith('/en')) {
-        window.location.href = '/en';
-      }
-    }
-    
-    // Restore scroll position after language switch
-    const savedScrollPos = sessionStorage.getItem('scrollPos');
-    if (savedScrollPos) {
-      window.scrollTo(0, parseInt(savedScrollPos));
-      sessionStorage.removeItem('scrollPos');
-    }
-    
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-  </script>
+  <section class="bento">
+    <div class="wrap reveal">
+      <div class="bento__head">
+        <h2 class="h2">What a profile gets</h2>
+      </div>
+
+      <div class="bento__grid">
+
+        <article class="cell cell--wide">
+          <div class="cell__visual" aria-hidden="true">
+            <div class="mini mini--card">
+              <div class="mini__head">
+                <span class="mini__title">Components</span>
+                <span class="mini__note">4 total · 3 running · 1 not running</span>
+              </div>
+              <div class="mini__row"><span class="mini__dot"></span><span class="mini__id mini__grow">MCP servers</span><span class="mini__tag">on</span></div>
+              <div class="mini__row"><span class="mini__dot"></span><span class="mini__id mini__grow">Custom providers</span><span class="mini__tag">on</span></div>
+              <div class="mini__row"><span class="mini__dot"></span><span class="mini__id mini__grow">Rules</span><span class="mini__tag">on</span></div>
+              <div class="mini__row"><span class="mini__dot mini__dot--off"></span><span class="mini__id mini__grow">Token limits</span><span class="mini__tag">off</span></div>
+            </div>
+          </div>
+          <h3 class="cell__title">A page of its own</h3>
+          <p class="cell__text">The profile's overview: which bundles the profile carries, and what a session or a plugin has to be told.</p>
+        </article>
+
+        <article class="cell">
+          <div class="cell__visual" aria-hidden="true">
+            <div class="mini mini--card">
+              <div class="mini__row">
+                <span class="mini__dot"></span>
+                <span class="mini__title mini__grow">supabase</span>
+                <span class="mini__switch"></span>
+              </div>
+              <div class="mini__row"><span class="mini__tag">streamable-http</span></div>
+              <div class="mini__row"><span class="mini__id mini__grow">mcp.supabase.com/mcp</span></div>
+              <div class="mini__row"><span class="mini__tag mini__tag--on">Tools (1): list_tables</span></div>
+              <div class="mini__row"><span class="mini__add">+ Add a server</span></div>
+            </div>
+          </div>
+          <h3 class="cell__title">The MCP servers</h3>
+          <p class="cell__text">One card per server: its address, its transport, its tools and a switch whose effect lands in the profile.</p>
+        </article>
+
+        <article class="cell">
+          <div class="cell__visual" aria-hidden="true">
+            <div class="mini mini--card">
+              <div class="mini__head">
+                <span class="mini__title">Requests</span>
+              </div>
+              <div class="mini__gauge"><span class="mini__gauge-fill"></span></div>
+              <div class="mini__row"><span class="mini__tag mini__tag--on">held</span><span class="mini__tag">queued</span><span class="mini__tag">forced</span></div>
+              <div class="mini__row"><span class="mini__note">over the limit</span></div>
+            </div>
+          </div>
+          <h3 class="cell__title">A limiter that waits</h3>
+          <p class="cell__text">A request over the limit takes its turn in a queue — nothing is limited as the package ships.</p>
+        </article>
+
+        <article class="cell">
+          <div class="cell__visual" aria-hidden="true">
+            <div class="mini mini--card">
+              <div class="mini__head">
+                <span class="mini__title">Models</span>
+                <span class="mini__note">reasoning effort</span>
+              </div>
+              <div class="mini__row"><span class="mini__dot"></span><span class="mini__segs"><span class="mini__seg mini__seg--on">low</span><span class="mini__seg">high</span><span class="mini__seg">max</span></span></div>
+              <div class="mini__row"><span class="mini__dot"></span><span class="mini__segs"><span class="mini__seg">low</span><span class="mini__seg mini__seg--on">high</span></span></div>
+              <div class="mini__row"><span class="mini__dot"></span><span class="mini__segs"><span class="mini__seg">low</span><span class="mini__seg">high</span><span class="mini__seg mini__seg--on">max</span></span></div>
+            </div>
+          </div>
+          <h3 class="cell__title">Custom providers</h3>
+          <p class="cell__text">Services the platform does not ship a client for, brought in through the profile and kept with the rest of it.</p>
+        </article>
+
+        <article class="cell">
+          <div class="cell__visual" aria-hidden="true">
+            <div class="mini mini--card">
+              <div class="mini__head">
+                <span class="mini__title">records</span>
+                <span class="mini__note">time · kind</span>
+              </div>
+              <div class="mini__row"><span class="mini__mark mini__mark--on"></span><span class="mini__id mini__grow">step</span></div>
+              <div class="mini__row"><span class="mini__mark mini__mark--round"></span><span class="mini__id mini__grow">task</span></div>
+              <div class="mini__row"><span class="mini__mark"></span><span class="mini__id mini__grow">refusal</span></div>
+              <div class="mini__row"><span class="mini__mark mini__mark--round"></span><span class="mini__id mini__grow">handover</span></div>
+            </div>
+          </div>
+          <h3 class="cell__title">The journal</h3>
+          <p class="cell__text">The environment's memory: what changed and what a participant did, kept as records a session can read.</p>
+        </article>
+
+        <article class="cell cell--wide">
+          <div class="cell__visual" aria-hidden="true">
+            <div class="mini mini--card">
+              <div class="mini__head">
+                <span class="mini__title">Project rules</span>
+                <span class="mini__tag mini__tag--on">in force</span>
+                <span class="mini__note">order 700</span>
+              </div>
+              <div class="mini__row"><span class="mini__check"></span><span class="mini__id mini__grow">Conventions</span></div>
+              <div class="mini__row"><span class="mini__check"></span><span class="mini__id mini__grow">Boundaries</span></div>
+              <div class="mini__row"><span class="mini__check"></span><span class="mini__id mini__grow">Handover</span></div>
+              <div class="mini__row"><span class="mini__check"></span><span class="mini__id mini__grow">Experiments</span></div>
+            </div>
+          </div>
+          <h3 class="cell__title">The rules in force</h3>
+          <p class="cell__text">A project's conventions carried in every request, through the platform's own prompt registry.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="install" id="install">
+    <div class="wrap reveal">
+      <div class="install__head">
+        <h2 class="h2">Two ways in</h2>
+      </div>
+
+      <div class="install__ways">
+
+        <div class="way">
+          <p class="way__caption">In a terminal</p>
+          <div class="term">
+            <div class="term__bar">
+              <span class="term__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              <button class="copy" type="button">Copy</button>
+            </div>
+            <pre class="term__body"><code><span class="term__prompt" aria-hidden="true">$ </span><span id="install-command">dsh plugin --profile desktop add github:Vensus137/Coreness-DSH</span></code></pre>
+          </div>
+        </div>
+
+        <div class="way">
+          <p class="way__caption">In the application</p>
+          <div class="appdoor">
+            <p class="appdoor__steps">
+              <span class="appdoor__step">Plugins</span>
+              <span class="appdoor__sep" aria-hidden="true">→</span>
+              <span class="appdoor__step">Add plugin</span>
+            </p>
+            <p class="appdoor__field"><code class="appdoor__addr">github:Vensus137/Coreness-DSH</code></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="eco">
+    <div class="wrap reveal">
+      <div class="eco__head">
+        <h2 class="h2">Two projects, one position</h2>
+      </div>
+
+      <div class="eco__grid">
+        <article class="card">
+          <h3 class="card__title">Coreness Kit</h3>
+          <p class="card__text">The rules of the work, written down and taken whole. A snapshot a project carries.</p>
+          <a target="_blank" rel="noopener noreferrer" class="card__action" href="https://github.com/Vensus137/Coreness-Kit">Vensus137/Coreness-Kit</a>
+        </article>
+
+        <article class="card">
+          <h3 class="card__title">Coreness for DeepSeek Harness</h3>
+          <p class="card__text">The same idea, carried into an environment: a face, a memory and a brake for a profile.</p>
+          <a target="_blank" rel="noopener noreferrer" class="card__action" href="https://github.com/Vensus137/Coreness-DSH">Vensus137/Coreness-DSH</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__row">
+    <p class="footer__copy">© Coreness 2026</p>
+    <a class="footer__link" href="https://t.me/vensus137" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg class="footer__icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path d="M23.07 3.28 19.6 19.63c-.26 1.15-.94 1.44-1.9.9l-5.26-3.88-2.54 2.44c-.28.28-.52.52-1.06.52l.38-5.36 9.75-8.81c.42-.38-.09-.59-.66-.21L6.27 13.03.98 11.38c-1.15-.36-1.17-1.15.24-1.7L21.6 1.79c.96-.35 1.8.22 1.47 1.49Z"/></svg></a>
+  </div>
+</footer>
+
 </body>
 </html>
