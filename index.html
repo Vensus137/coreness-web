@@ -1,448 +1,780 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark">
-<title>Coreness — An agent that answers to the project.</title>
-<meta name="description" content="A small family of projects about governed agent work: what a project accepts, remembers and allows to be spent — written down, so the agent can be held to it.">
-<meta property="og:title" content="Coreness">
-<meta property="og:description" content="A small family of projects about governed agent work: what a project accepts, remembers and allows to be spent — written down, so the agent can be held to it.">
-<meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%230f1115'/%3E%3Ctext%20x='16'%20y='22'%20text-anchor='middle'%20font-family='monospace'%20font-size='18'%20font-weight='700'%20fill='%235686fe'%3EC%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css">
-<script>
-/* The page is complete without this. The `js` class is what arms the entrance
-   and the scroll reveals; the pointer highlight and the scroll parallax are
-   armed only where the visitor has not asked for a still page. */
-(function () {
-  var root = document.documentElement;
-  if (!('IntersectionObserver' in window) || !root.classList) return;
-  root.classList.add('js');
+<title>Coreness — the panel for your DeepSeek Harness profile</title>
+<meta name="description" content="Coreness is a third-party panel for DeepSeek Harness: MCP servers, the Qoder provider, rate limits and the Agent team — your profile drawn as one live picture you can act on.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F5F1E8">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script>document.documentElement.className = 'js';</script>
+<style>
+:root{
+  --paper:#F5F1E8;
+  --paper-2:#EFE9DD;
+  --paper-3:#FBF8F1;
+  --ink:#15130F;
+  --ink-2:#332E25;
+  --muted:#5F5A4F;
+  --rule:#D8D1C1;
+  --rule-strong:#B9B09C;
+  --accent:#B23A20;
+  --accent-ink:#8E2D18;
+  --accent-soft:#E8896F;
+  --green-ink:#14713A;
+  --red-ink:#9C3319;
+  --white:#FFFFFF;
+  --p-ink:#0F1115;
+  --p-muted:#6B7078;
+  --p-border:#E4E4E4;
+  --p-border-strong:#D6D6D6;
+  --p-pill:#EBEEF2;
+  --p-track:#858B93;
+  --serif:Georgia,"Iowan Old Style","Palatino Linotype","Book Antiqua","Times New Roman",serif;
+  --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  --mono:"Cascadia Mono",Consolas,"SF Mono",Menlo,"Liberation Mono",monospace;
+  --shell:1160px;
+  --gutter:clamp(20px,4.4vw,56px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{max-width:100%;height:auto;display:block}
+button{font:inherit;color:inherit}
+a{color:inherit}
+h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+::selection{background:var(--accent);color:var(--paper)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.dark :focus-visible,.close :focus-visible{outline-color:var(--accent-soft)}
+.shell{width:100%;max-width:var(--shell);margin:0 auto;padding:0 var(--gutter)}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.sr:focus{position:fixed;top:14px;left:14px;width:auto;height:auto;margin:0;clip:auto;padding:10px 16px;background:var(--ink);color:var(--paper);border-radius:6px;z-index:100;font:500 13px/1.2 var(--sans);text-decoration:none}
+[id]{scroll-margin-top:84px}
 
-  document.addEventListener('DOMContentLoaded', function () {
-    var seen = new IntersectionObserver(function (entries) {
-      for (var i = 0; i < entries.length; i++) {
-        if (entries[i].isIntersecting) {
-          entries[i].target.classList.add('is-in');
-          seen.unobserve(entries[i].target);
-        }
-      }
-    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--rule)}
+.bar-in{display:flex;align-items:center;justify-content:space-between;gap:26px;height:64px}
+.mark{display:inline-flex;align-items:center;gap:11px;text-decoration:none;font:400 19px/1 var(--serif);letter-spacing:-.01em}
+.bar-nav{display:flex;gap:clamp(14px,2.4vw,30px)}
+.bar-nav a{font:500 11.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--muted);padding:8px 0;border-bottom:1px solid transparent;white-space:nowrap}
+.bar-nav a:hover,.bar-nav a.is-current{color:var(--ink);border-bottom-color:var(--accent)}
+.bar-links{display:flex;gap:18px}
+.bar-links a{font:500 11.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--ink);padding:8px 0;border-bottom:1px solid var(--rule-strong);white-space:nowrap}
+.bar-links a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.bar-links .arr{font-size:10px;color:var(--accent)}
 
-    var revealed = document.querySelectorAll('.reveal');
-    for (var j = 0; j < revealed.length; j++) seen.observe(revealed[j]);
+/* ---------- type ---------- */
+h1,h2{font-family:var(--serif);font-weight:400;letter-spacing:-.015em}
+h1{margin-top:clamp(20px,3vw,34px);font-size:clamp(38px,8vw,116px);line-height:.99}
+h1 em{font-style:italic;color:var(--accent)}
+h2{font-size:clamp(31px,4.3vw,58px);line-height:1.04;margin-top:18px}
+h2 em{font-style:italic}
+.kicker{display:flex;align-items:flex-start;gap:10px;font:500 11.5px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.kicker::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;margin-top:.45em}
+.num{display:flex;align-items:center;gap:14px;font:500 11.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.num b{color:var(--accent);font-weight:500}
+.num::after{content:"";flex:1;height:1px;background:var(--rule)}
 
-    var button = document.querySelector('.copy');
-    var command = document.getElementById('install-command');
-    if (button && command) {
-      var resting = button.textContent;
-      var timer = null;
-      var say = function (word) {
-        button.textContent = word;
-        if (timer !== null) clearTimeout(timer);
-        timer = setTimeout(function () { button.textContent = resting; }, 2000);
-      };
-      var selectLine = function () {
-        var range = document.createRange();
-        range.selectNodeContents(command);
-        var selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-      };
-      button.addEventListener('click', function () {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(command.textContent).then(
-            function () { say('Copied'); },
-            function () { selectLine(); say('Copy failed'); }
-          );
-          return;
-        }
-        selectLine();
-        say('Copy failed');
-      });
-    }
+/* ---------- hero ---------- */
+.hero{padding:clamp(52px,7.5vw,100px) 0 clamp(26px,4vw,44px)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.75fr);gap:clamp(28px,4vw,64px);align-items:end;margin-top:clamp(26px,4vw,42px)}
+.lede{font-size:clamp(17px,1.5vw,20.5px);line-height:1.56;max-width:53ch}
+.hero-cta{display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+.cta-row{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);text-decoration:none;font:500 15px/1 var(--sans);padding:15px 22px;border-radius:999px;transition:background .2s ease,color .2s ease}
+.btn:hover{background:var(--accent);color:var(--paper)}
+.btn .arr{font-family:var(--mono);font-size:13px;transform:translateY(-1px)}
+.textlink{font:500 15px/1 var(--sans);text-decoration:none;padding-bottom:4px;border-bottom:1px solid var(--rule-strong)}
+.textlink:hover{color:var(--accent);border-bottom-color:var(--accent)}
 
-    /* A still page is a promise: nothing below runs where it was asked for. */
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+/* ---------- panel reproduction ---------- */
+.stage{padding-bottom:clamp(48px,6vw,84px)}
+.rail-title{font:500 16px/1 var(--sans);letter-spacing:-.01em;color:var(--p-ink);padding:4px 10px 18px}
+.rail-row{font:400 14px/1 var(--sans);color:#3B4048;padding:9px 10px;border-radius:9px;margin-bottom:2px}
+.rail-row.is-active{background:var(--p-pill);color:var(--p-ink);font-weight:500}
+.caption{margin-top:14px;font:italic 400 15px/1.55 var(--serif);color:var(--muted);max-width:62ch}
+.caption b{font-weight:400;color:var(--ink);font-style:normal;font-family:var(--mono);font-size:.86em;letter-spacing:.02em}
 
-    var wrap = document.querySelector('.mockWrap');
-    var section = document.querySelector('.mockSection');
-    if (!wrap) return;
+/* ---------- index ---------- */
 
-    /* The glow follows the pointer across the window. */
-    var lit = function (event) {
-      var r = wrap.getBoundingClientRect();
-      var x = ((event.clientX - r.left) / r.width) * 100;
-      var y = ((event.clientY - r.top) / r.height) * 100;
-      wrap.style.setProperty('--px', Math.max(0, Math.min(100, x)).toFixed(1) + '%');
-      wrap.style.setProperty('--py', Math.max(0, Math.min(100, y)).toFixed(1) + '%');
-    };
-    wrap.addEventListener('pointermove', lit);
-    wrap.addEventListener('pointerleave', function () {
-      wrap.style.removeProperty('--px');
-      wrap.style.removeProperty('--py');
-    });
+/* ---------- chapters ---------- */
+.chapter-grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(30px,5vw,72px);align-items:start}
+.chapter p{margin-top:18px;font-size:17px;line-height:1.68;max-width:60ch}
+.chapter p:first-of-type{margin-top:22px}
+.chapter-note{margin-top:30px;padding-left:18px;border-left:2px solid var(--accent);font:italic 400 16.5px/1.55 var(--serif);color:var(--muted);max-width:54ch}
+.wide-head{max-width:780px}
 
-    /* The window drifts against the scroll, by twenty pixels at most. */
-    if (!section) return;
-    var frame = null;
-    var place = function () {
-      frame = null;
-      var r = section.getBoundingClientRect();
-      var t = (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight;
-      t = Math.max(-1, Math.min(1, t));
-      wrap.style.setProperty('--parallax', (t * 20).toFixed(1) + 'px');
-    };
-    var onScroll = function () {
-      if (frame === null) frame = requestAnimationFrame(place);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    place();
-  });
-}());
-</script>
+/* ---------- band ---------- */
+.band{background:var(--paper-2);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:clamp(48px,7vw,92px) 0}
+.band h2{max-width:22ch}
+.band-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(96px,150px) minmax(0,1fr) minmax(96px,150px) minmax(0,1fr);gap:18px;align-items:start;margin-top:clamp(30px,4vw,46px)}
+.band-label{font:500 11px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.band-text{margin-top:10px;font:400 16.5px/1.5 var(--sans);max-width:26ch}
+.band-arrow{position:relative;margin-top:34px;display:flex;flex-direction:column;align-items:center;gap:9px}
+.band-arrow::before{content:"";display:block;width:100%;height:1px;background:var(--rule-strong)}
+.band-arrow::after{content:"";position:absolute;right:0;top:-4px;width:8px;height:8px;border-top:1.5px solid var(--rule-strong);border-right:1.5px solid var(--rule-strong);transform:rotate(45deg)}
+.band-word{font:500 10px/1.35 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center}
+.band-note{margin-top:clamp(28px,4vw,42px);max-width:74ch;font:italic 400 16.5px/1.6 var(--serif);color:var(--muted)}
+
+/* ---------- qoder spec ---------- */
+.spec-label{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.spec{border-top:1px solid var(--rule-strong)}
+.spec-row{display:grid;grid-template-columns:132px minmax(0,1fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--rule)}
+.spec-key{font:500 11px/1.7 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.spec-val{font:400 15.5px/1.55 var(--sans)}
+.spec-val b{font-weight:500}
+
+/* ---------- gate instrument ---------- */
+.gate{margin-top:clamp(30px,4vw,40px);background:#fff;border:1px solid #DCD5C6;border-radius:16px;padding:clamp(18px,2.4vw,28px);box-shadow:0 30px 60px -58px rgba(21,19,15,.55)}
+.gate-top{display:flex;align-items:center;gap:12px;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gate-tag{padding:4px 8px;border:1px solid var(--rule);border-radius:999px}
+.gate-clock{margin-left:auto;font-variant-numeric:tabular-nums}
+.gate-btn{background:none;border:0;padding:4px 0;cursor:pointer;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.gate-gauge{margin-top:24px}
+.gate-gauge-head{display:flex;justify-content:space-between;gap:12px;font:500 13px/1.4 var(--sans);color:var(--ink-2)}
+.gate-gauge-head b{font-weight:500}
+.gate-gauge-head .muted{color:var(--p-muted);font-weight:400}
+.gate-track{height:12px;border-radius:999px;background:#EDE7DB;margin-top:9px;overflow:hidden}
+.gate-fill{height:100%;width:72%;border-radius:999px;background:var(--ink);transition:width .3s linear}
+.gate-lane{display:flex;align-items:center;gap:14px;margin-top:14px;border-top:1px solid #EFEBE1;padding-top:13px;min-height:24px}
+.gate-label{width:78px;flex:none;font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--p-muted)}
+.gate-dots{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:14px}
+.dot{width:13px;height:13px;border-radius:50%;background:var(--p-ink)}
+.gate-chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid #DCD5C6;border-radius:999px;padding:4px 10px;background:var(--paper-3);font:400 12px/1 var(--sans)}
+.chip-name{font-weight:500}
+.chip-wait{font:400 10.5px/1 var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.gate-empty{font:italic 400 14px/1.4 var(--serif);color:var(--muted)}
+.gate-foot{display:flex;justify-content:space-between;gap:16px;margin-top:12px;border-top:1px solid #EFEBE1;padding-top:11px;font:400 12px/1.4 var(--mono);color:var(--muted)}
+.gate-flash{color:var(--accent-ink);font-weight:500;text-align:right}
+.gate .caption{margin-top:18px}
+.glossary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 28px;margin-top:28px}
+.glossary div{border-top:1px solid var(--rule);padding-top:10px}
+.glossary dt{font:500 10px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.glossary dd{margin:5px 0 0;font:400 13.5px/1.5 var(--sans);color:var(--muted)}
+
+/* ---------- team policy diagram ---------- */
+.policy{display:grid;grid-template-columns:minmax(0,1fr) 38px minmax(0,1fr);gap:10px;align-items:stretch}
+.policy-box{border:1px solid var(--rule);border-radius:11px;padding:16px;background:var(--paper-3)}
+.policy-label{font:500 10px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;min-height:2.8em}
+.bars{display:flex;flex-direction:column;gap:7px}
+.bars span{height:7px;border-radius:4px;background:#DFD8C8}
+.bars .w90{width:90%}.bars .w96{width:96%}.bars .w72{width:72%}.bars .w84{width:84%}.bars .w64{width:64%}
+.policy-sentence{margin-top:14px;padding:9px 11px;border:1px dashed var(--accent);border-radius:6px;font:italic 400 13.5px/1.45 var(--serif);color:var(--accent-ink)}
+.policy-repl{margin-top:11px;padding:11px 12px;border:1px solid var(--accent);border-radius:6px;background:#FBEDE7;font:italic 400 14px/1.45 var(--serif)}
+.policy-repl--2{margin-top:7px;border-color:var(--rule-strong);background:transparent;font-size:13.5px}
+.policy-swap{display:flex;align-items:center;justify-content:center;font:400 20px/1 var(--mono);color:var(--accent)}
+.policy-caption{grid-column:1 / -1;margin-top:16px}
+
+/* ---------- the hand ---------- */
+
+/* ---------- receipts ---------- */
+.receipts{padding:clamp(52px,7.5vw,104px) 0;border-top:1px solid var(--rule)}
+.receipts-head{max-width:760px}
+.receipts-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(22px,3vw,32px) clamp(24px,4vw,48px);margin-top:clamp(28px,4vw,42px)}
+.receipt{border-top:1px solid var(--rule);padding-top:16px}
+.receipt-key{font:500 10.5px/1.5 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--accent-ink)}
+.receipt p{margin-top:9px;font:400 15.5px/1.55 var(--sans);max-width:40ch}
+
+/* ---------- install ---------- */
+.install{padding:clamp(52px,7.5vw,104px) 0;border-top:1px solid var(--rule)}
+.install-inner{max-width:860px}
+.steps{margin-top:clamp(28px,4vw,42px);border-top:1px solid var(--rule-strong)}
+.step{display:grid;grid-template-columns:58px minmax(0,1fr);gap:22px;padding:22px 0;border-bottom:1px solid var(--rule)}
+.step-n{font:500 11px/1.9 var(--mono);letter-spacing:.14em;color:var(--accent)}
+.step-body{font:400 17px/1.6 var(--sans)}
+.step-body b{font-weight:500}
+.code{margin-top:13px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--ink);color:var(--paper);border-radius:10px;padding:16px 20px;font:400 clamp(13px,1.5vw,17px)/1.35 var(--mono);word-break:break-all}
+.code .tag{flex:none;font:500 9.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#B8B0A0}
+.install-note{margin-top:26px;font:italic 400 16px/1.6 var(--serif);color:var(--muted);max-width:62ch}
+.install details{margin-top:4px;border-top:1px solid var(--rule);padding:15px 0}
+.install details:first-of-type{margin-top:30px}
+summary{display:flex;justify-content:space-between;align-items:baseline;gap:16px;cursor:pointer;list-style:none;font:500 15px/1.4 var(--sans)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:400 18px/1 var(--mono);color:var(--muted)}
+.install details[open] summary::after{content:"–"}
+.details-body{padding-top:14px;font:400 15px/1.65 var(--sans);color:var(--ink-2);max-width:72ch}
+.details-body p+p{margin-top:10px}
+.details-body code{font:400 13px/1.5 var(--mono);background:#E9E2D4;padding:2px 6px;border-radius:4px;word-break:break-all}
+.details-body .url{font:400 13px/1.5 var(--mono);word-break:break-all}
+
+/* ---------- close ---------- */
+.close{background:var(--ink);color:var(--paper);padding:clamp(60px,8.5vw,116px) 0 clamp(40px,5.5vw,72px)}
+.close h2{font-size:clamp(33px,5.2vw,70px);max-width:17ch;line-height:1.02}
+.close h2 em{color:var(--accent-soft)}
+.close-lede{margin-top:22px;font:400 17px/1.62 var(--sans);color:#D8D2C4;max-width:58ch}
+.close-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,2vw,20px);margin-top:clamp(34px,5vw,52px)}
+.link-card{display:block;text-decoration:none;border:1px solid #3A352C;border-radius:12px;padding:clamp(18px,2.4vw,28px);transition:border-color .2s ease,background .2s ease}
+.link-card:hover{border-color:var(--accent-soft);background:#1D1A16}
+.link-name{font:400 clamp(20px,2.2vw,26px)/1.2 var(--serif)}
+.link-name .arr{font:400 .72em/1 var(--mono);color:var(--accent-soft);margin-left:8px}
+.link-url{display:block;margin-top:10px;font:400 13px/1.5 var(--mono);color:#B8B0A0;word-break:break-all}
+.close-fine{margin-top:clamp(34px,5vw,52px);padding-top:20px;border-top:1px solid #3A352C;font:400 12.5px/1.65 var(--mono);color:#B8B0A0;max-width:80ch}
+.close-fine a{color:#D8D2C4;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+.foot{background:var(--ink);color:#B8B0A0;border-top:1px solid #2B2721;padding:22px 0 26px}
+.foot-in{display:flex;justify-content:space-between;align-items:baseline;gap:18px;font:400 12px/1.7 var(--mono)}
+.foot-in a{color:#D8D2C4;text-decoration:none;border-bottom:1px solid #4A4438}
+.foot-in a:hover{color:var(--paper);border-bottom-color:var(--accent-soft)}
+
+/* ---------- reveal ---------- */
+.reveal{opacity:1;transform:none}
+@media (prefers-reduced-motion:no-preference){
+  .js .reveal{transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .8s cubic-bezier(.22,.61,.36,1);transition-delay:calc(var(--i,0)*70ms)}
+  .js .reveal:not(.is-in){opacity:0;transform:translateY(16px)}
+}
+
+/* ---------- responsive ---------- */
+@media (max-width:1080px){
+  .bar-nav{display:none}
+  .hero-grid{grid-template-columns:minmax(0,1fr);gap:30px}
+  .hero-cta{flex-direction:row;align-items:center;flex-wrap:wrap;gap:20px}
+  .hero-cta .note{width:100%}
+  .chapter-grid{grid-template-columns:minmax(0,1fr);gap:36px}
+  .chapter-text{max-width:640px}
+  .band-grid{grid-template-columns:minmax(0,1fr);gap:0}
+  .band-arrow{margin:18px 0;width:60px}
+  .band-arrow::before{display:none}
+  .band-arrow::after{content:"↓";border:0;transform:none;position:static;font:400 16px/1 var(--mono);color:var(--rule-strong);width:auto;height:auto}
+  .band-word{position:static;display:block}
+  .band-text{max-width:none}
+  .receipts-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .glossary{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  body{font-size:16px}
+  .bar-in{height:56px;gap:14px}
+  .mark{font-size:17px}
+  .bar-links{gap:14px}
+  .bar-links a{font-size:10.5px}
+  .chapter p{font-size:16px}
+  .close-links{grid-template-columns:minmax(0,1fr)}
+  .close h2{font-size:clamp(32px,9.5vw,48px)}
+  .receipts-grid{grid-template-columns:minmax(0,1fr)}
+  .glossary{grid-template-columns:minmax(0,1fr)}
+  .policy{grid-template-columns:minmax(0,1fr)}
+  .policy-swap{height:30px;transform:rotate(90deg)}
+  .gate-foot{flex-direction:column;gap:6px}
+  .gate-flash{text-align:left}
+  .foot-in{flex-direction:column;gap:10px}
+  h1{font-size:clamp(36px,11.2vw,52px)}
+}
+@media (max-width:420px){
+  .kicker{font-size:10.5px;letter-spacing:.12em}
+  .code{flex-direction:column;align-items:flex-start;gap:8px}
+  .cta-row{width:100%;justify-content:center}
+  .btn{width:100%;justify-content:center}
+  .textlink{width:auto;text-align:center}
+}
+.demo{--coreness-bg:#fff;--coreness-surface:#fff;--coreness-surface-2:#F5F1E8;--coreness-line:#E2DACB;--coreness-control-line:#8A8174;--coreness-text:#15130F;--coreness-muted:#5F5A4F;--coreness-accent:var(--accent);--coreness-radius:12px;--coreness-font:var(--sans);--coreness-mono:var(--mono);--coreness-shadow:0 22px 50px -46px rgba(21,19,15,.55);margin-top:clamp(24px,3.4vw,38px);border:1px solid var(--rule);border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 28px 60px -54px rgba(21,19,15,.5)}
+.stage-noscript{margin-top:16px}
+.foot-in{align-items:center}
+.foot-owner{margin:0;font:400 13px/1.6 var(--sans);letter-spacing:.01em;color:#D2CBBB}
+.foot-links{display:flex;gap:12px}
+.foot-links a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid #3A352C;border-radius:999px;color:#B8B0A0}
+.foot-links a:hover,.foot-links a:focus-visible{color:var(--paper);border-color:var(--accent-soft)}
+.rooms{margin:clamp(34px,5vw,64px) 0 0}
+.rooms-list{margin-top:clamp(18px,3vw,26px);border-top:1px solid var(--rule)}
+.room{border-bottom:1px solid var(--rule)}
+.room-head{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.15fr) auto;align-items:baseline;gap:clamp(12px,2vw,26px);padding:22px 4px;cursor:pointer;list-style:none}
+.room-head::-webkit-details-marker{display:none}
+.room-head .n{font:500 11px/1.4 var(--mono);letter-spacing:.1em;color:var(--accent)}
+.room-head .name{font:400 clamp(21px,2.4vw,28px)/1.15 var(--serif);letter-spacing:-.01em;color:var(--ink);transition:color .18s ease}
+.room-head .desc{font:400 15px/1.5 var(--sans);color:var(--muted)}
+.room-head .mark{width:9px;height:9px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);transition:transform .2s ease;margin-bottom:3px}
+.room[open] .room-head .mark{transform:rotate(-135deg)}
+.room-head:hover .name{color:var(--accent)}
+.room-head:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.room-head::after{content:none}
+.room-body{padding:clamp(10px,1.6vw,20px) 0 clamp(34px,5vw,58px)}
+@media (max-width:760px){
+  .room-head{grid-template-columns:auto minmax(0,1fr) auto;row-gap:6px}
+  .room-head .desc{grid-column:1/-1}
+}
+.room{scroll-margin-top:96px}
+.band-in-room{margin-top:clamp(34px,5vw,54px);padding-top:clamp(30px,4vw,44px);border-top:1px solid var(--rule)}
+@media (max-width:760px){
+  .room-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+  .room-head .n{order:1}
+  .room-head .name{order:2;flex:1}
+  .room-head .mark{order:3;margin-bottom:2px}
+  .room-head .desc{order:4;flex-basis:100%}
+}.cmd{display:flex;align-items:baseline;gap:10px;margin:14px 0;padding:13px 15px;background:var(--paper-2);border:1px solid var(--rule);border-radius:8px;font:400 13px/1.6 var(--mono);color:var(--ink-2);overflow-x:auto}
+.cmd-prompt{color:var(--accent);flex:none}
+.cmd code{font:inherit;background:none;padding:0;border-radius:0;word-break:normal;white-space:nowrap}
+.room-body .chapter-grid > :last-child{margin-top:10px}
+.room-body strong{font-weight:600;color:var(--ink)}
+</style>
+<noscript><style>.gate-btn{display:none}</style></noscript>
+  <link rel="stylesheet" href="demo/demo.css">
 </head>
 <body>
+<a class="sr" href="#main">Skip to content</a>
 
-<header class="bar" id="site-bar">
-  <div class="wrap bar__strip">
-    <div class="bar__pill">
-      <a class="bar__mark" href="#top">Coreness</a>
-      <nav class="bar__nav" aria-label="Coreness elsewhere">
-        <a class="bar__link" href="https://github.com/Vensus137/Coreness-Kit" target="_blank" rel="noopener noreferrer" aria-label="Coreness Kit"><svg class="bar__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span class="bar__label">Coreness Kit</span></a>
-        <a class="bar__link" href="https://github.com/Vensus137/Coreness-DSH" target="_blank" rel="noopener noreferrer" aria-label="Coreness DSH"><svg class="bar__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span class="bar__label">Coreness DSH</span></a>
-        <a class="bar__link" href="https://t.me/vensus137" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg class="bar__icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M23.07 3.28 19.6 19.63c-.26 1.15-.94 1.44-1.9.9l-5.26-3.88-2.54 2.44c-.28.28-.52.52-1.06.52l.38-5.36 9.75-8.81c.42-.38-.09-.59-.66-.21L6.27 13.03.98 11.38c-1.15-.36-1.17-1.15.24-1.7L21.6 1.79c.96-.35 1.8.22 1.47 1.49Z"/></svg><span class="bar__label">Telegram</span></a>
-      </nav>
+<header class="bar">
+  <div class="shell bar-in">
+    <a class="mark" href="#top">Coreness</a>
+    <nav class="bar-nav" aria-label="Sections">
+      <a href="#team">Team</a>
+      <a href="#mcp">Servers</a>
+      <a href="#qoder">Qoder</a>
+      <a href="#limits">Rate limiter</a>
+      <a href="#install">Install</a>
+    </nav>
+    <div class="bar-links">
+      <a href="https://github.com/Vensus137/Coreness-DSH">GitHub <span class="arr" aria-hidden="true">↗</span></a>
+      <a href="https://t.me/Vensus137">Telegram <span class="arr" aria-hidden="true">↗</span></a>
     </div>
   </div>
 </header>
-<script>
-/* The pill's surface follows the page rather than switching on it: its opacity
-   is written from the scroll offset itself, so the fade has no threshold to
-   jump at and no delay to be seen through. The stylesheet serves the pill, so a
-   page whose script never runs keeps a readable bar. */
-(function () {
-  var bar = document.getElementById('site-bar');
-  if (!bar || !window.addEventListener || !bar.style) return;
-  var FADE = 140; // the distance over which the surface arrives
-  var ticking = false;
-  var place = function () {
-    ticking = false;
-    var y = window.scrollY || window.pageYOffset || 0;
-    var t = y <= 0 ? 0 : y >= FADE ? 1 : y / FADE;
-    // Eased, because a linear fade reads as a switch at its ends.
-    var eased = t * t * (3 - 2 * t);
-    bar.style.setProperty('--surface', eased.toFixed(3));
-    bar.classList.toggle('is-scrolled', eased > 0.5);
-  };
-  var onScroll = function () {
-    if (ticking) return;
-    ticking = true;
-    window.requestAnimationFrame(place);
-  };
-  place();
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-}());
-</script>
-<div class="bg" aria-hidden="true">
-  <div class="bg__grid"></div>
-  <div class="bg__glow bg__glow--hero"></div>
-  <div class="bg__glow bg__glow--deep"></div>
+
+<main id="main">
+  <section class="hero" id="top" aria-labelledby="hero-h">
+    <div class="shell">
+      <p class="kicker">For DeepSeek Harness · MIT</p>
+      <h1 id="hero-h">Your profile,<br><em>as it really stands.</em></h1>
+      <div class="hero-grid reveal">
+        <p class="lede">Coreness extends DeepSeek Harness: settings that usually live in files are drawn in a panel you can read and change, and each part of that panel is a plugin you add.</p>
+        <div class="hero-cta">
+          <div class="cta-row">
+            <a class="btn" href="https://github.com/Vensus137/Coreness-DSH">Get Coreness on GitHub <span class="arr" aria-hidden="true">↗</span></a>
+            <a class="textlink" href="https://t.me/Vensus137">Telegram <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage" aria-label="A reproduction of the Coreness panel, drawn in this page">
+    <div class="shell">
+      <div class="demo">
+        <div data-coreness-demo></div>
+      </div>
+      <noscript><p class="caption stage-noscript">The panel is drawn by a script. Without one this page keeps its text and its links.</p></noscript>
+    </div>
+  </section>
+
+  <section class="rooms" aria-labelledby="rooms-h">
+    <div class="shell">
+      <p class="kicker" id="rooms-h">The panel, room by room</p>
+      <div class="rooms-list">
+        <details class="room" id="team" name="room">
+          <summary class="room-head">
+            <span class="n">01</span>
+            <span class="name">Agent team</span>
+            <span class="desc">A ceiling on teammates, and two switches on the policy the Lead starts with.</span>
+            <span class="mark" aria-hidden="true"></span>
+          </summary>
+          <div class="room-body">
+<div class="chapter-grid">
+  <div class="chapter-text">
+        <h2 id="team-h">More hands, <em>and a second pair of eyes.</em></h2>
+    <p>The ceiling decides how many teammates a session may carry. The first switch hands the Lead the product's paragraph on leading a team: it takes the place of one sentence in what the harness tells it, and every other line stays as written.</p>
+    <p>The second adds the <strong>review pass</strong>: a fresh reviewer holds each round of work against the spec, asks what is weak, what is extra and what is missing — and edits nothing. The Lead decides where to call one, and a small task needs none.</p>
+    <p class="chapter-note">The team is the harness's; Coreness sets the ceiling and the two switches, and reports what its patch did.</p>
+  </div>
+  <figure class="policy" style="--i:1">
+    <div class="policy-box">
+      <p class="policy-label">The harness's policy</p>
+      <div class="bars" aria-hidden="true"><span class="w96"></span><span class="w88" style="width:88%"></span><span class="w72"></span><span class="w90"></span></div>
+      <p class="policy-sentence">its last sentence — the one that tells the Lead to wait</p>
+    </div>
+    <div class="policy-swap" aria-hidden="true">→</div>
+    <div class="policy-box">
+      <p class="policy-label">The Lead's policy, on</p>
+      <div class="bars" aria-hidden="true"><span class="w96"></span><span class="w72"></span><span class="w90"></span><span class="w84"></span></div>
+      <p class="policy-repl">the product's paragraph</p>
+      <p class="policy-repl policy-repl--2">+ the review pass</p>
+    </div>
+    <figcaption class="caption policy-caption">Every other line of the harness's policy stays. The product's paragraph takes the place of the last sentence; the review pass follows it. The switches apply from the session's next step.</figcaption>
+  </figure>
 </div>
 
-<main>
+          </div>
+        </details>
+        <details class="room" id="mcp" name="room">
+          <summary class="room-head">
+            <span class="n">02</span>
+            <span class="name">MCP servers</span>
+            <span class="desc">Every server on one card — its tools, its switch, its sign-in — set up in the panel rather than by hand in a file.</span>
+            <span class="mark" aria-hidden="true"></span>
+          </summary>
+          <div class="room-body">
+<div class="wide-head">
+    <h2 id="mcp-h">Your MCP servers, <em>without the fiddling.</em></h2>
+  <p>One card per server: the transport, the command or address, the environment it needs and the tools the harness found — read from the profile, so what you see is what runs.</p>
+  <p><strong>The switch is the whole edit.</strong> Turning a server on writes the row into the profile itself, not a copy; the harness owns the connection, and the card shows what the save left behind — if the read-back disagrees, it says <strong>Not saved</strong>.</p>
+  <p>A server behind OAuth is <strong>signed in from its card</strong>: the token goes in as a credential reference, not a value.</p>
+  <p class="chapter-note">The harness's Plugins page cannot edit these rows. This panel is their editor.</p>
+</div>
 
-  <section class="hero">
-    <div class="wrap hero__inner">
-      <p class="hero__top reveal"><span class="brand">Coreness</span><span class="hero__sep" aria-hidden="true">·</span><span class="badge"><span class="badge__dot" aria-hidden="true"></span>Open source · MIT</span></p>
-      <h1 class="h1 reveal reveal--1">An agent that answers to the project.</h1>
-      <p class="lede reveal reveal--2">A small family of projects about governed agent work: what a project accepts, remembers and allows to be spent — written down, so the agent can be held to it.</p>
-      <div class="actions reveal reveal--2">
-        <a class="btn btn--primary" href="#install">Install Coreness</a>
-        <a target="_blank" rel="noopener noreferrer" class="btn btn--quiet" href="https://github.com/Vensus137/Coreness-Kit">Coreness Kit</a>
+<div class="band-head">
+  <div class="band-in-room">
+<p class="kicker">How a server switch lands</p>
+  <h2 id="band-h">The panel writes the row. <em>The harness makes it real.</em></h2>
+</div>
+<div class="band-grid">
+  <div class="band-node">
+    <p class="band-label">The panel</p>
+    <p class="band-text">One card, one switch, one press.</p>
+  </div>
+  <div class="band-arrow" aria-hidden="true"><span class="band-word">writes the row</span></div>
+  <div class="band-node">
+    <p class="band-label">The profile</p>
+    <p class="band-text">The servers file, its rows — and the tree the panel reads back.</p>
+  </div>
+  <div class="band-arrow" aria-hidden="true"><span class="band-word">the harness reads it</span></div>
+  <div class="band-node">
+    <p class="band-label">The harness</p>
+    <p class="band-text">The connection, its state, the tools. Not ours.</p>
+  </div>
+</div>
+
+</div>
+          </div>
+        </details>
+        <details class="room" id="qoder" name="room">
+          <summary class="room-head">
+            <span class="n">03</span>
+            <span class="name">Qoder</span>
+            <span class="desc">Your Qoder subscription, registered natively: its models, levels, credits and data policy.</span>
+            <span class="mark" aria-hidden="true"></span>
+          </summary>
+          <div class="room-body">
+<div class="chapter-grid">
+<div class="chapter-text">
+    <h2 id="qoder-h">Your Qoder plan, <em>plugged in.</em></h2>
+  <p><strong>Qoder is its own product, with its own subscription — not ours.</strong> Coreness registers it as a provider, so the plan you already pay for serves the agent here: paste the token once and it goes into the harness's credential store — never a config file, never a log.</p>
+  <p><strong>Both regions work out of the box</strong> — global and China; the one that answers is kept, and a region can be pinned. Your account's models arrive with their reasoning levels, as Qoder publishes them.</p>
+  <p><strong>The spend stays in sight:</strong> credits and campaigns are read while the panel runs, sharing is one press away, and Qoder's web search is a switch — off until you turn it on.</p>
+  <p class="chapter-note">A failed read says what failed. No stand-in value is drawn under it.</p>
+</div>
+<div style="--i:1">
+  <p class="spec-label">On the Qoder page</p>
+  <div class="spec" role="table" aria-label="What the Qoder section holds">
+    <div class="spec-row" role="row"><span class="spec-key" role="rowheader">Token</span><span class="spec-val" role="cell">One credential reference, resolved on every call.</span></div>
+    <div class="spec-row" role="row"><span class="spec-key" role="rowheader">Models</span><span class="spec-val" role="cell">Your account's, with their reasoning levels and output budget.</span></div>
+    <div class="spec-row" role="row"><span class="spec-key" role="rowheader">Regions</span><span class="spec-val" role="cell">Global or China: the exchange decides, a pin overrides.</span></div>
+    <div class="spec-row" role="row"><span class="spec-key" role="rowheader">Credits</span><span class="spec-val" role="cell">Balance and campaigns, read while the panel runs.</span></div>
+    <div class="spec-row" role="row"><span class="spec-key" role="rowheader">Sharing</span><span class="spec-val" role="cell">Read from the account; one press to stop where the plan allows.</span></div>
+    <div class="spec-row" role="row"><span class="spec-key" role="rowheader">Search</span><span class="spec-val" role="cell">Qoder web search and fetch: one switch, off by default.</span></div>
+  </div>
+  <p class="caption">What the Qoder page holds.</p>
+</div>
+
+          </div>
+</div>
+          </div>
+        </details>
+        <details class="room" id="limits" name="room">
+          <summary class="room-head">
+            <span class="n">04</span>
+            <span class="name">Rate limiter</span>
+            <span class="desc">A ceiling per model that makes a call wait for room instead of failing.</span>
+            <span class="mark" aria-hidden="true"></span>
+          </summary>
+          <div class="room-body">
+<div class="wide-head">
+    <h2 id="limits-h">A limit that <em>waits, not refuses.</em></h2>
+  <p><strong>Set a ceiling in tokens per minute</strong> and calls that would cross it wait their turn instead of failing: the gate holds a queue and lets the call at its head through as room appears.</p>
+  <p>Past the longest wait the call goes anyway, marked <b>forced</b> — a full window is a delay with a name, not a hung turn. Nothing is limited until you set a limit; everything else passes through untouched.</p>
+  <p>The counters say their own scope: this run alone. A reload keeps them, a restart wipes them, and spend elsewhere is not counted.</p>
+</div>
+<figure class="gate" data-gate>
+  <div class="gate-top">
+    <span class="gate-tag">Illustrative</span>
+    <span>The window</span>
+    <span class="gate-clock" data-clock>t+30 s</span>
+    <button class="gate-btn" type="button" data-gate-toggle>Pause</button>
+  </div>
+  <div class="gate-gauge">
+    <div class="gate-gauge-head"><span>tokens in the last 60 s</span><span><b data-used>86k</b> <span class="muted">/ 120k</span></span></div>
+    <div class="gate-track"><div class="gate-fill" data-gauge></div></div>
+  </div>
+  <div class="gate-lane">
+    <span class="gate-label">Admitted</span>
+    <div class="gate-dots" data-admitted></div>
+  </div>
+  <div class="gate-lane">
+    <span class="gate-label">Queue</span>
+    <div class="gate-chips" data-queue></div>
+  </div>
+  <div class="gate-foot">
+    <span data-stats>admitted 3 · queued 1 · forced 0</span>
+    <span class="gate-flash" data-flash></span>
+  </div>
+  <figcaption class="caption">A demonstration of how the gate behaves, not a reading of your profile.</figcaption>
+</figure>
+<dl class="glossary">
+  <div><dt>Window</dt><dd>60 s — the stretch the ceiling is counted over.</dd></div>
+  <div><dt>Longest wait</dt><dd>60 s — how long a call may be held before it goes forced.</dd></div>
+  <div><dt>Caution</dt><dd>0.9 — the share of the ceiling the gate runs at.</dd></div>
+  <div><dt>Ceiling</dt><dd>Tokens per minute, declared per provider and model.</dd></div>
+</dl>
+<p class="caption">The defaults; each one is set on the Rate limiter page.</p>
+
+          </div>
+        </details>
       </div>
     </div>
   </section>
 
-  <!-- The picture of the product. Decorative: a screen reader is given the copy
-       above and below, never a wall of interface text. -->
-  <section class="mockSection reveal">
-    <div class="mockWrap">
-      <div class="mockGlow" aria-hidden="true"></div>
-      <div class="mock" aria-hidden="true">
+  <section class="receipts" aria-labelledby="receipts-h">
+    <div class="shell">
+      <div class="receipts-head reveal">
+        <p class="kicker">No small print</p>
+        <h2 id="receipts-h">The fine points, <em>in plain sight.</em></h2>
+      </div>
+      <div class="receipts-grid">
+        <div class="receipt reveal" style="--i:0"><p class="receipt-key">No service</p><p>Nothing runs on our side — no cloud, no account, no service between you and the profile it reads.</p></div>
+        <div class="receipt reveal" style="--i:1"><p class="receipt-key">No version bound</p><p>Plain files, no build step, and no Harness version bound — it installs into the one you run.</p></div>
+        <div class="receipt reveal" style="--i:2"><p class="receipt-key">Only what you use</p><p>Each part is its own plugin. A profile switches off what it does not use on the app's Plugins page.</p></div>
+        <div class="receipt reveal" style="--i:3"><p class="receipt-key">One owner</p><p>A local tool: one owner, one machine, no shared database, no service of its own.</p></div>
+        <div class="receipt reveal" style="--i:4"><p class="receipt-key">MIT</p><p>The source is the install. Read every line before you run it.</p></div>
+        <div class="receipt reveal" style="--i:5"><p class="receipt-key">No sign-up</p><p>No account with us and no key of ours: the install is the whole onboarding.</p></div>
+      </div>
+    </div>
+  </section>
 
-        <div class="mock__chrome">
-          <span class="mock__dots"><span></span><span></span><span></span></span>
-          <span class="mock__profile">desktop</span>
+  <section class="install" id="install" aria-labelledby="install-h" data-section>
+    <div class="shell install-inner">
+      <div class="reveal">
+        <p class="kicker">Install</p>
+        <h2 id="install-h">Two steps, <em>in the app's own window.</em></h2>
+      </div>
+      <div class="steps reveal">
+        <div class="step">
+          <span class="step-n">01</span>
+          <div class="step-body">Open <b>Plugins → Add plugin</b> in DeepSeek Harness.</div>
         </div>
-
-        <div class="mock__body">
-
-          <div class="mock__app">
-            <div class="mock__appmark"><span class="mock__glyph"></span></div>
-            <div class="mock__approw">Plugins</div>
-            <div class="mock__approw mock__approw--on">Coreness</div>
-            <div class="mock__group">
-              <div class="mock__grouplabel">Sessions</div>
-              <div class="mock__session mock__session--on"><span></span><span></span></div>
-              <div class="mock__session"><span></span><span></span></div>
-              <div class="mock__session"><span></span><span></span></div>
-              <div class="mock__session"><span></span><span></span></div>
-            </div>
-            <div class="mock__appfoot">
-              <div class="mock__approw"><span class="mock__ring"></span>Widgets</div>
-              <div class="mock__approw">Settings</div>
-            </div>
-          </div>
-
-          <div class="mock__rail">
-            <div class="mock__railtitle">Coreness</div>
-            <div class="mock__railrow mock__railrow--on">The product</div>
-            <div class="mock__railrow">MCP servers</div>
-            <div class="mock__railrow">Rate limiter</div>
-            <div class="mock__railrow">Custom providers</div>
-          </div>
-
-          <div class="mock__pane">
-
-            <div class="mock__card">
-              <span class="mock__title">Coreness</span>
-              <p class="mock__name">@coreness/dsh</p>
-              <p class="mock__desc">The Coreness kit for DeepSeek Harness: a page of its own, the journal, the picture, the form of the profile's MCP servers, and the doors to providers that are not in the platform's own list — one bundle for a profile.</p>
-            </div>
-
-            <div class="mock__sections">
-
-              <div class="mock__section">
-                <div class="mock__sectionhead">
-                  <span class="mock__sectiontitle">Components</span>
-                  <span class="mock__count">8 total · 7 running · 1 not running</span>
-                </div>
-                <div class="mock__missing">
-                  <span class="mock__missingrow">coreness-oauth</span>
-                </div>
-              </div>
-
-              <div class="mock__section">
-                <div class="mock__sectionhead">
-                  <span class="mock__sectiontitle">MCP servers</span>
-                  <span class="mock__count">2 total · 1 on · 1 off · 1 with tools</span>
-                </div>
-
-                <div class="mock__server">
-                  <div class="mock__serverhead">
-                    <span class="mock__servertitle">
-                      <span class="mock__servername"><span class="mock__dot"></span>supabase</span>
-                      <span class="mock__target"><span class="mock__chip">streamable-http</span><span class="mock__url">https://mcp.supabase.com/mcp</span></span>
-                    </span>
-                    <span class="mock__switch mock__switch--on"><span class="mock__thumb"></span></span>
-                  </div>
-                  <p class="mock__tools"><b>Tools (1):</b> list_tables</p>
-                </div>
-
-                <div class="mock__server">
-                  <div class="mock__serverhead">
-                    <span class="mock__servertitle">
-                      <span class="mock__servername">context7</span>
-                      <span class="mock__target"><span class="mock__chip">streamable-http</span><span class="mock__url">https://mcp.context7.com/mcp</span></span>
-                    </span>
-                    <span class="mock__switch"><span class="mock__thumb"></span></span>
-                  </div>
-                  <p class="mock__tools">no tools yet</p>
-                </div>
-
-                <div class="mock__addrow"><span class="mock__addmore">Add a server</span></div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="bento">
-    <div class="wrap reveal">
-      <div class="bento__head">
-        <h2 class="h2">What a profile gets</h2>
-      </div>
-
-      <div class="bento__grid">
-
-        <article class="cell cell--wide">
-          <div class="cell__visual" aria-hidden="true">
-            <div class="mini mini--card">
-              <div class="mini__head">
-                <span class="mini__title">Components</span>
-                <span class="mini__note">4 total · 3 running · 1 not running</span>
-              </div>
-              <div class="mini__row"><span class="mini__dot"></span><span class="mini__id mini__grow">MCP servers</span><span class="mini__tag">on</span></div>
-              <div class="mini__row"><span class="mini__dot"></span><span class="mini__id mini__grow">Custom providers</span><span class="mini__tag">on</span></div>
-              <div class="mini__row"><span class="mini__dot"></span><span class="mini__id mini__grow">Rules</span><span class="mini__tag">on</span></div>
-              <div class="mini__row"><span class="mini__dot mini__dot--off"></span><span class="mini__id mini__grow">Token limits</span><span class="mini__tag">off</span></div>
-            </div>
-          </div>
-          <h3 class="cell__title">A page of its own</h3>
-          <p class="cell__text">The profile's overview: which bundles the profile carries, and what a session or a plugin has to be told.</p>
-        </article>
-
-        <article class="cell">
-          <div class="cell__visual" aria-hidden="true">
-            <div class="mini mini--card">
-              <div class="mini__row">
-                <span class="mini__dot"></span>
-                <span class="mini__title mini__grow">supabase</span>
-                <span class="mini__switch"></span>
-              </div>
-              <div class="mini__row"><span class="mini__tag">streamable-http</span></div>
-              <div class="mini__row"><span class="mini__id mini__grow">mcp.supabase.com/mcp</span></div>
-              <div class="mini__row"><span class="mini__tag mini__tag--on">Tools (1): list_tables</span></div>
-              <div class="mini__row"><span class="mini__add">+ Add a server</span></div>
-            </div>
-          </div>
-          <h3 class="cell__title">The MCP servers</h3>
-          <p class="cell__text">One card per server: its address, its transport, its tools and a switch whose effect lands in the profile.</p>
-        </article>
-
-        <article class="cell">
-          <div class="cell__visual" aria-hidden="true">
-            <div class="mini mini--card">
-              <div class="mini__head">
-                <span class="mini__title">Requests</span>
-              </div>
-              <div class="mini__gauge"><span class="mini__gauge-fill"></span></div>
-              <div class="mini__row"><span class="mini__tag mini__tag--on">held</span><span class="mini__tag">queued</span><span class="mini__tag">forced</span></div>
-              <div class="mini__row"><span class="mini__note">over the limit</span></div>
-            </div>
-          </div>
-          <h3 class="cell__title">A limiter that waits</h3>
-          <p class="cell__text">A request over the limit takes its turn in a queue — nothing is limited as the package ships.</p>
-        </article>
-
-        <article class="cell">
-          <div class="cell__visual" aria-hidden="true">
-            <div class="mini mini--card">
-              <div class="mini__head">
-                <span class="mini__title">Models</span>
-                <span class="mini__note">reasoning effort</span>
-              </div>
-              <div class="mini__row"><span class="mini__dot"></span><span class="mini__segs"><span class="mini__seg mini__seg--on">low</span><span class="mini__seg">high</span><span class="mini__seg">max</span></span></div>
-              <div class="mini__row"><span class="mini__dot"></span><span class="mini__segs"><span class="mini__seg">low</span><span class="mini__seg mini__seg--on">high</span></span></div>
-              <div class="mini__row"><span class="mini__dot"></span><span class="mini__segs"><span class="mini__seg">low</span><span class="mini__seg">high</span><span class="mini__seg mini__seg--on">max</span></span></div>
-            </div>
-          </div>
-          <h3 class="cell__title">Custom providers</h3>
-          <p class="cell__text">Services the platform does not ship a client for, brought in through the profile and kept with the rest of it.</p>
-        </article>
-
-        <article class="cell">
-          <div class="cell__visual" aria-hidden="true">
-            <div class="mini mini--card">
-              <div class="mini__head">
-                <span class="mini__title">records</span>
-                <span class="mini__note">time · kind</span>
-              </div>
-              <div class="mini__row"><span class="mini__mark mini__mark--on"></span><span class="mini__id mini__grow">step</span></div>
-              <div class="mini__row"><span class="mini__mark mini__mark--round"></span><span class="mini__id mini__grow">task</span></div>
-              <div class="mini__row"><span class="mini__mark"></span><span class="mini__id mini__grow">refusal</span></div>
-              <div class="mini__row"><span class="mini__mark mini__mark--round"></span><span class="mini__id mini__grow">handover</span></div>
-            </div>
-          </div>
-          <h3 class="cell__title">The journal</h3>
-          <p class="cell__text">The environment's memory: what changed and what a participant did, kept as records a session can read.</p>
-        </article>
-
-        <article class="cell cell--wide">
-          <div class="cell__visual" aria-hidden="true">
-            <div class="mini mini--card">
-              <div class="mini__head">
-                <span class="mini__title">Project rules</span>
-                <span class="mini__tag mini__tag--on">in force</span>
-                <span class="mini__note">order 700</span>
-              </div>
-              <div class="mini__row"><span class="mini__check"></span><span class="mini__id mini__grow">Conventions</span></div>
-              <div class="mini__row"><span class="mini__check"></span><span class="mini__id mini__grow">Boundaries</span></div>
-              <div class="mini__row"><span class="mini__check"></span><span class="mini__id mini__grow">Handover</span></div>
-              <div class="mini__row"><span class="mini__check"></span><span class="mini__id mini__grow">Experiments</span></div>
-            </div>
-          </div>
-          <h3 class="cell__title">The rules in force</h3>
-          <p class="cell__text">A project's conventions carried in every request, through the platform's own prompt registry.</p>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <section class="install" id="install">
-    <div class="wrap reveal">
-      <div class="install__head">
-        <h2 class="h2">Two ways in</h2>
-      </div>
-
-      <div class="install__ways">
-
-        <div class="way">
-          <p class="way__caption">In a terminal</p>
-          <div class="term">
-            <div class="term__bar">
-              <span class="term__dots" aria-hidden="true"><span></span><span></span><span></span></span>
-              <button class="copy" type="button">Copy</button>
-            </div>
-            <pre class="term__body"><code><span class="term__prompt" aria-hidden="true">$ </span><span id="install-command">dsh plugin --profile desktop add github:Vensus137/Coreness-DSH</span></code></pre>
+        <div class="step">
+          <span class="step-n">02</span>
+          <div class="step-body">Paste the address.
+            <div class="code"><span>github:Vensus137/Coreness-DSH</span><span class="tag">The address</span></div>
           </div>
         </div>
-
-        <div class="way">
-          <p class="way__caption">In the application</p>
-          <div class="appdoor">
-            <p class="appdoor__steps">
-              <span class="appdoor__step">Plugins</span>
-              <span class="appdoor__sep" aria-hidden="true">→</span>
-              <span class="appdoor__step">Add plugin</span>
-            </p>
-            <p class="appdoor__field"><code class="appdoor__addr">github:Vensus137/Coreness-DSH</code></p>
-          </div>
+      </div>
+      <p class="install-note reveal">It installs into the profile the app is already running — you do not choose one. The app asks for a restart only when it cannot apply the change in place, and nothing is built on the way in.</p>
+      <details class="reveal">
+        <summary>By command line</summary>
+        <div class="details-body">
+          <p><code>dsh</code> is the application's command: <b>Application → Manage dsh Command…</b> puts it on the path. A terminal opened before that keeps the path it started with.</p>
+          <p class="cmd"><span class="cmd-prompt" aria-hidden="true">$</span><code>dsh plugin --profile desktop add github:Vensus137/Coreness-DSH</code></p>
+          <p>On the desktop application the profile is named <code>desktop</code>; on the web surface it is named <code>web</code>. A profile that does not exist yet is created.</p>
         </div>
-
-      </div>
-    </div>
+      </details>
+      <details class="reveal">
+        <summary>Updates through the market</summary>
+        <div class="details-body">
+          <p>Updates come through the app's <b>Discover</b> tab: switch <b>Custom plugin markets</b> on once under <b>Plugins → More</b>, add <code>https://raw.githubusercontent.com/Vensus137/Coreness-DSH/main/market.json</code>, and the plugin stands there with its versions — install and update from that page.</p>
+          <p>To pin a fixed version, name its tag where an address is taken: <code>github:Vensus137/Coreness-DSH#&lt;tag&gt;</code>.</p>
+        </div>
+      </details>
+          </div>
   </section>
 
-  <section class="eco">
-    <div class="wrap reveal">
-      <div class="eco__head">
-        <h2 class="h2">Two projects, one position</h2>
+  <section class="close" id="links" aria-labelledby="close-h">
+    <div class="shell">
+      <div class="reveal">
+        <h2 id="close-h">Your profile, <em>as it really stands.</em></h2>
+        <p class="close-lede">Coreness for DeepSeek Harness — a panel with no service of its own between you and the profile it shows.</p>
       </div>
-
-      <div class="eco__grid">
-        <article class="card">
-          <h3 class="card__title">Coreness Kit</h3>
-          <p class="card__text">The rules of the work, written down and taken whole. A snapshot a project carries.</p>
-          <a target="_blank" rel="noopener noreferrer" class="card__action" href="https://github.com/Vensus137/Coreness-Kit">Vensus137/Coreness-Kit</a>
-        </article>
-
-        <article class="card">
-          <h3 class="card__title">Coreness for DeepSeek Harness</h3>
-          <p class="card__text">The same idea, carried into an environment: a face, a memory and a brake for a profile.</p>
-          <a target="_blank" rel="noopener noreferrer" class="card__action" href="https://github.com/Vensus137/Coreness-DSH">Vensus137/Coreness-DSH</a>
-        </article>
+      <div class="close-links">
+        <a class="link-card reveal" style="--i:0" href="https://github.com/Vensus137/Coreness-DSH">
+          <span class="link-name">The repository <span class="arr" aria-hidden="true">↗</span></span>
+          <span class="link-url">https://github.com/Vensus137/Coreness-DSH</span>
+        </a>
+        <a class="link-card reveal" style="--i:1" href="https://t.me/Vensus137">
+          <span class="link-name">Telegram <span class="arr" aria-hidden="true">↗</span></span>
+          <span class="link-url">https://t.me/Vensus137</span>
+        </a>
       </div>
+      <p class="close-fine reveal">Coreness is an independent, third-party product for DeepSeek Harness and is not affiliated with DeepSeek. MIT licence. <a href="#top">Back to top ↑</a></p>
     </div>
   </section>
-
 </main>
 
-<footer class="footer">
-  <div class="wrap footer__row">
-    <p class="footer__copy">© Coreness 2026</p>
-    <a class="footer__link" href="https://t.me/vensus137" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg class="footer__icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path d="M23.07 3.28 19.6 19.63c-.26 1.15-.94 1.44-1.9.9l-5.26-3.88-2.54 2.44c-.28.28-.52.52-1.06.52l.38-5.36 9.75-8.81c.42-.38-.09-.59-.66-.21L6.27 13.03.98 11.38c-1.15-.36-1.17-1.15.24-1.7L21.6 1.79c.96-.35 1.8.22 1.47 1.49Z"/></svg></a>
+<footer class="foot">
+  <div class="shell foot-in">
+    <p class="foot-owner">© Coreness</p>
+    <div class="foot-links">
+      <a href="https://github.com/Vensus137/Coreness-DSH" aria-label="Coreness on GitHub" title="Coreness on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.25 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg></a>
+      <a href="https://t.me/Vensus137" aria-label="Telegram" title="Telegram"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="currentColor" d="M9.04 15.51l-.34 4.59c.48 0 .69-.21.94-.46l2.26-2.16 4.68 3.42c.86.48 1.47.23 1.7-.79l3.08-14.4c.28-1.27-.46-1.77-1.3-1.46L1.9 9.53c-1.24.48-1.22 1.17-.21 1.48l3.7 1.15 8.6-5.4c.4-.26.77-.12.47.15z"/></svg></a>
+    </div>
   </div>
 </footer>
 
+<script src="demo/demo.js" defer></script>
+<script>
+(function () {
+  'use strict';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Reveal on scroll; without IntersectionObserver or with reduced motion everything stands. */
+  var reveals = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+  var showAll = function () { reveals.forEach(function (el) { el.classList.add('is-in'); }); };
+  if (!('IntersectionObserver' in window) || reduce) {
+    showAll();
+  } else {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('is-in'); revealObserver.unobserve(entry.target); }
+      });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.01 });
+    reveals.forEach(function (el) { revealObserver.observe(el); });
+  }
+
+  /* A nav link opens its room; the hash does the same on load. */
+  var rooms = Array.prototype.slice.call(document.querySelectorAll('details[name="room"]'));
+  var openRoom = function (id) {
+    var room = null;
+    rooms.forEach(function (one) { if (one.id === id) { room = one; } });
+    if (!room) { return; }
+    room.open = true;
+  };
+  Array.prototype.forEach.call(document.querySelectorAll('.bar-nav a'), function (a) {
+    a.addEventListener('click', function () { openRoom(a.getAttribute('href').slice(1)); });
+  });
+  if (location.hash) { openRoom(location.hash.slice(1)); }
+  window.addEventListener('hashchange', function () { openRoom(location.hash.slice(1)); });
+
+  /* One room at a time, for a browser that does not know name= on details. */
+  rooms.forEach(function (room) {
+    room.addEventListener('toggle', function () {
+      if (!room.open) { return; }
+      rooms.forEach(function (other) { if (other !== room) { other.open = false; } });
+    });
+  });
+
+  /* The rate gate, played as a demonstration: 60 s window, 120k ceiling, 60 s longest wait. */
+  var gate = document.querySelector('[data-gate]');
+  if (gate) {
+    var gaugeEl = gate.querySelector('[data-gauge]');
+    var usedEl = gate.querySelector('[data-used]');
+    var dotsEl = gate.querySelector('[data-admitted]');
+    var queueEl = gate.querySelector('[data-queue]');
+    var statsEl = gate.querySelector('[data-stats]');
+    var clockEl = gate.querySelector('[data-clock]');
+    var flashEl = gate.querySelector('[data-flash]');
+    var toggleEl = gate.querySelector('[data-gate-toggle]');
+    var WINDOW = 60000, CEIL = 120000, MAXWAIT = 60000, TICK = 120, SPEED = 12, ARRIVAL = 14000;
+    var NAMES = ['files', 'search', 'notes', 'files', 'search', 'notes'];
+    var SIZES = [26000, 34000, 18000, 41000, 29000, 23000];
+    var state, tickTimer = 0, playing = false, inView = true, flashTimer = 0;
+
+    var usedTokens = function () {
+      return state.admitted.reduce(function (sum, a) { return sum + a.tokens; }, 0);
+    };
+    var k = function (n) { return Math.round(n / 1000) + 'k'; };
+    var chip = function (name, waitText) {
+      var el = document.createElement('span');
+      el.className = 'chip';
+      var n = document.createElement('span'); n.className = 'chip-name'; n.textContent = name;
+      var w = document.createElement('span'); w.className = 'chip-wait'; w.textContent = waitText;
+      el.appendChild(n); el.appendChild(w);
+      return el;
+    };
+    var flash = function (text) {
+      flashEl.textContent = text;
+      window.clearTimeout(flashTimer);
+      flashTimer = window.setTimeout(function () { flashEl.textContent = ''; }, 2800);
+    };
+    var render = function () {
+      var used = usedTokens();
+      gaugeEl.style.width = Math.min(100, (used / CEIL) * 100) + '%';
+      usedEl.textContent = k(used);
+      dotsEl.textContent = '';
+      if (state.admitted.length === 0) {
+        var none = document.createElement('span'); none.className = 'gate-empty'; none.textContent = 'nothing in the window'; dotsEl.appendChild(none);
+      } else {
+        state.admitted.forEach(function (a) {
+          var dot = document.createElement('span'); dot.className = 'dot'; dot.title = a.name + ' · ' + k(a.tokens) + ' tokens';
+          dotsEl.appendChild(dot);
+        });
+      }
+      queueEl.textContent = '';
+      if (state.queue.length === 0) {
+        var quiet = document.createElement('span'); quiet.className = 'gate-empty'; quiet.textContent = 'empty — every call fits'; queueEl.appendChild(quiet);
+      } else {
+        state.queue.forEach(function (q) {
+          queueEl.appendChild(chip(q.name, Math.max(0, Math.round((state.t - q.arrived) / 1000)) + ' s'));
+        });
+      }
+      statsEl.textContent = 'admitted ' + state.admittedCount + ' · queued ' + state.queue.length + ' · forced ' + state.forcedCount;
+      clockEl.textContent = 't+' + Math.floor(state.t / 1000) + ' s';
+    };
+    var admit = function (req, forced) {
+      req.expires = state.t + WINDOW;
+      state.admitted.push(req);
+      state.admittedCount += 1;
+      if (forced) { state.forcedCount += 1; }
+    };
+    var reset = function () {
+      state = {
+        t: 30000,
+        admitted: [
+          { name: 'files', tokens: 26000, expires: 42000 },
+          { name: 'search', tokens: 34000, expires: 51000 },
+          { name: 'files', tokens: 26000, expires: 58000 }
+        ],
+        queue: [{ name: 'search', tokens: 34000, arrived: 21000 }],
+        nextArrival: 36000,
+        arrivals: 0,
+        admittedCount: 3,
+        forcedCount: 0
+      };
+      render();
+    };
+    var tick = function () {
+      state.t += TICK * SPEED;
+      state.admitted = state.admitted.filter(function (a) { return a.expires > state.t; });
+      if (state.t >= state.nextArrival) {
+        var index = state.arrivals % SIZES.length;
+        var req = { name: NAMES[index], tokens: SIZES[index], arrived: state.t };
+        state.arrivals += 1;
+        state.nextArrival = state.t + ARRIVAL;
+        if (usedTokens() + req.tokens <= CEIL) { admit(req, false); } else { state.queue.push(req); }
+      }
+      if (state.queue.length) {
+        var head = state.queue[0];
+        if (usedTokens() + head.tokens <= CEIL) {
+          state.queue.shift();
+          admit(head, false);
+        } else if (state.t - head.arrived >= MAXWAIT) {
+          state.queue.shift();
+          admit(head, true);
+          flash('a call went forced — its longest wait was spent');
+        }
+      }
+      if (state.t > 600000) { reset(); }
+      render();
+    };
+    var setPlaying = function (next) {
+      playing = next;
+      toggleEl.textContent = playing ? 'Pause' : 'Play';
+      toggleEl.setAttribute('aria-label', playing ? 'Pause the demonstration' : 'Play the demonstration');
+      if (playing && !tickTimer) {
+        tickTimer = window.setInterval(function () { if (playing && inView && !document.hidden) { tick(); } }, TICK);
+      }
+      if (!playing && tickTimer) {
+        window.clearInterval(tickTimer);
+        tickTimer = 0;
+      }
+    };
+    reset();
+    setPlaying(!reduce);
+    toggleEl.addEventListener('click', function () { setPlaying(!playing); });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) { inView = entry.isIntersecting; });
+      }, { rootMargin: '120px 0px' }).observe(gate);
+    }
+  }
+}());
+</script>
 </body>
 </html>
