@@ -280,11 +280,12 @@ summary::after{content:"+";font:400 18px/1 var(--mono);color:var(--muted)}
 .rooms{margin:clamp(34px,5vw,64px) 0 0}
 .rooms-list{margin-top:clamp(18px,3vw,26px);border-top:1px solid var(--rule)}
 .room{border-bottom:1px solid var(--rule)}
+.room:last-child{border-bottom:0}
 .room-head{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.15fr) auto;align-items:baseline;gap:clamp(12px,2vw,26px);padding:22px 4px;cursor:pointer;list-style:none}
 .room-head::-webkit-details-marker{display:none}
 .room-head .n{font:500 11px/1.4 var(--mono);letter-spacing:.1em;color:var(--accent)}
 .room-head .name{font:400 clamp(21px,2.4vw,28px)/1.15 var(--serif);letter-spacing:-.01em;color:var(--ink);transition:color .18s ease}
-.room-head .desc{font:400 15px/1.5 var(--sans);color:var(--muted)}
+.room-head .desc{font:400 15px/1.5 var(--sans);color:var(--muted);min-height:3em}
 .room-head .mark{width:9px;height:9px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);transition:transform .2s ease;margin-bottom:3px}
 .room[open] .room-head .mark{transform:rotate(-135deg)}
 .room-head:hover .name{color:var(--accent)}
@@ -468,7 +469,6 @@ summary::after{content:"+";font:400 18px/1 var(--mono);color:var(--muted)}
 
           </div>
 </div>
-          </div>
         </details>
         <details class="room" id="limits" name="room">
           <summary class="room-head">
